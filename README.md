@@ -27,6 +27,7 @@ Coming soon…
 - (Upcoming) ML-powered suggestions
 
 ## 📂 Project Structure (MVP)
+
 /app → App Router structure (Next.js)  
 /questions → List and view questions  
 /ask → Form to ask a question  
@@ -45,11 +46,13 @@ npm install
 ```
 
 Setup your env vars
+
 ```bash
 cp .env.example .env.local
 ```
 
 Dev mode
+
 ```bash
 npm run dev
 ```
@@ -60,6 +63,7 @@ npm run dev
 
 We're building this under the umbrella of **IT Community of Uzbekistan**.  
 In the future, the project will welcome contributions from volunteers and the open-source community, including:
+
 - Feature requests
 - Code contributions
 - Design suggestions
@@ -67,10 +71,9 @@ In the future, the project will welcome contributions from volunteers and the op
 
 See CONTRIBUTING.md (coming soon) for guidelines.
 
-
 ## 📄 License
-[MIT License](./LICENSE)
 
+[MIT License](./LICENSE)
 
 ## 📬 Contact
 
