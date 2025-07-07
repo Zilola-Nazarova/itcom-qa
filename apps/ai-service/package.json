@@ -1,0 +1,9 @@
+{
+  "name": "ai-service",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "echo 'Start your FastAPI service here'",
+    "build": "echo 'Build your FastAPI service here'"
+  }
+}
