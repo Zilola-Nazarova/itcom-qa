@@ -6,7 +6,9 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint:js": "next lint",
+    "lint:css": "stylelint '**/*.{css,scss,html}' --quiet",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "react": "^19.0.0",
