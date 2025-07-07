@@ -16,7 +16,8 @@
     "lint": "npm run lint:js && npm run lint:css",
     "format": "npm --workspace apps/web run format",
     "validate": "npm run lint && npm run format",
-    "bootstrap": "npm install"
+    "bootstrap": "npm install",
+    "postinstall": "prisma generate"
   },
   "devDependencies": {
     "prettier": "^3.6.2",
