@@ -57,6 +57,20 @@ Dev mode
 npm run dev
 ```
 
+## 🧩 Available Scripts
+
+- `npm run web:dev` – Start the Next.js app in `apps/web`
+- `npm run ai:dev` – Start the AI service in `apps/ai-service`
+- `npm run web:build` – Build the production version of the web app
+- `npm run ai:build` – Build the AI service (planned)
+- `npm run build` – Build both web and AI apps
+- `npm run lint:js` – Lint JavaScript/TypeScript files in the web app
+- `npm run lint:css` – Lint CSS files in the web app
+- `npm run lint` – Run both JS/TS and CSS linters
+- `npm run format` – Format code in the web app with Prettier
+- `npm run validate` – Lint and format code
+- `npm run bootstrap` – Install dependencies across all workspaces
+
 ---
 
 ## 💬 Want to Contribute?

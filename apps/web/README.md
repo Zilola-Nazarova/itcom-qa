@@ -2,7 +2,7 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First, run the development server:
+First, run the development server (from apps/web):
 
 ```bash
 npm run dev
@@ -19,6 +19,21 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+
+## 🧩 Available Scripts
+
+📍 **Note:** These commands must be run from the `apps/web` directory.
+
+```bash
+cd apps/web
+```
+
+- `npm run dev` – Start the development server using Next.js with Turbopack
+- `npm run build` – Build the application for production
+- `npm run start` – Start the production server (after `build`)
+- `npm run lint:js` – Run ESLint on JavaScript and TypeScript files
+- `npm run lint:css` – Run Stylelint on CSS/SCSS files (quiet mode)
+- `npm run format` – Format all files using Prettier
 
 ## Learn More
 
