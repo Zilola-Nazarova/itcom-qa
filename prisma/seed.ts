@@ -1,8 +1,10 @@
-import { PrismaClient } from '../generated/prisma'
-
-const prisma = new PrismaClient()
+import prisma from '../apps/web/lib/prisma'
 
 async function main() {
+  await prisma.answer.deleteMany()
+  await prisma.question.deleteMany()
+  await prisma.user.deleteMany()
+
   const alice = await prisma.user.create({
     data: {
       name: 'Alice',
