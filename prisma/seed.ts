@@ -19,21 +19,67 @@ async function main() {
     },
   })
 
+  // Create tags
+  const [nextjs, api, postgres, tailwind] = await Promise.all([
+    prisma.tag.create({ data: { name: 'nextjs' } }),
+    prisma.tag.create({ data: { name: 'api' } }),
+    prisma.tag.create({ data: { name: 'postgres' } }),
+    prisma.tag.create({ data: { name: 'tailwind' } }),
+  ])
+
   const question = await prisma.question.create({
     data: {
-      title: 'How to set up Prisma with Next.js?',
-      content: 'I am trying to use Prisma in a fullstack Next.js app. Any tips?',
+      title: 'Why is my Next.js API route not working?',
+      content: 'I created an API route under /pages/api/hello.js but it doesn’t seem to work.',
       authorId: alice.id,
+      tags: {
+        create: [
+          { tagId: nextjs.id },
+          { tagId: api.id },
+        ],
+      },
     },
   })
 
-  await prisma.answer.create({
+  const answer = await prisma.answer.create({
     data: {
-      content: 'You can initialize Prisma in lib/prisma.ts and generate the client via schema.',
+      content: 'Make sure your file is named correctly and placed under /pages/api.',
       authorId: bob.id,
       questionId: question.id,
     },
   })
+
+  await prisma.comment.createMany({
+    data: [
+      {
+        content: 'Did you restart the dev server?',
+        authorId: bob.id,
+        questionId: question.id,
+      },
+      {
+        content: 'Thanks, that worked!',
+        authorId: alice.id,
+        answerId: answer.id,
+      },
+    ],
+  })
+
+  await prisma.vote.createMany({
+    data: [
+      {
+        value: 1,
+        userId: bob.id,
+        questionId: question.id,
+      },
+      {
+        value: 1,
+        userId: alice.id,
+        answerId: answer.id,
+      },
+    ],
+  })
+
+  console.log('🌱 Seed data successfully created.')
 }
 
 main()
