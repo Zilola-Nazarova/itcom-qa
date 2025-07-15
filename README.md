@@ -83,7 +83,7 @@ In the future, the project will welcome contributions from volunteers and the op
 - Design suggestions
 - Translations
 
-See CONTRIBUTING.md (coming soon) for guidelines.
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
 
 ## 📄 License
 
