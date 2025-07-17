@@ -6,7 +6,7 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint:js": "next lint",
+    "lint:js": "eslint app",
     "lint:css": "stylelint '**/*.{css,scss}' --quiet",
     "format": "prettier --write ."
   },
