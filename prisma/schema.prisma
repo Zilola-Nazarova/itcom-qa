@@ -1,0 +1,93 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  questions Question[]
+  answers   Answer[]
+  comments  Comment[]
+  votes     Vote[]
+}
+
+model Question {
+  id          String    @id @default(cuid())
+  title       String
+  content     String
+  createdAt   DateTime  @default(now())
+  author      User      @relation(fields: [authorId], references: [id])
+  authorId    String
+  answers     Answer[]
+  comments    Comment[]
+  tags        QuestionTag[]
+  votes       Vote[]
+}
+
+model Answer {
+  id          String    @id @default(cuid())
+  content     String
+  createdAt   DateTime  @default(now())
+  question    Question  @relation(fields: [questionId], references: [id])
+  questionId  String
+  author      User      @relation(fields: [authorId], references: [id])
+  authorId    String
+  comments    Comment[]
+  votes       Vote[]
+}
+
+model Comment {
+  id          String    @id @default(cuid())
+  content     String
+  createdAt   DateTime  @default(now())
+  author      User      @relation(fields: [authorId], references: [id])
+  authorId    String
+  question    Question? @relation(fields: [questionId], references: [id])
+  questionId  String?
+  answer      Answer?   @relation(fields: [answerId], references: [id])
+  answerId    String?
+}
+
+model Tag {
+  id       String     @id @default(cuid())
+  name     String     @unique
+  questions   QuestionTag[]
+}
+
+model Vote {
+  id         String   @id @default(cuid())
+  value      Int
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  question   Question? @relation(fields: [questionId], references: [id])
+  questionId String?
+  answer     Answer?   @relation(fields: [answerId], references: [id])
+  answerId   String?
+  createdAt  DateTime  @default(now())
+
+  @@unique([userId, questionId])
+  @@unique([userId, answerId])
+}
+
+model QuestionTag {
+  question    Question   @relation(fields: [questionId], references: [id])
+  questionId  String
+  tag         Tag        @relation(fields: [tagId], references: [id])
+  tagId       String
+
+  @@id([questionId, tagId])
+}
