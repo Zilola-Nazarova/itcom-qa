@@ -39,22 +39,25 @@ Coming soon…
 
 ## 🧪 Getting Started
 
+Clone the repository and install the dependencies:
+
 ```bash
 git clone git@github.com:Zilola-Nazarova/itcom-qa.git
 cd itcom-qa
 npm install
 ```
 
-Setup your env vars
+Setup your env vars:
 
 ```bash
-cp .env.example .env.local
+cp .env.example .env
+cp apps/web/.env.local.example apps/web/.env.local
 ```
 
-Dev mode
+Run the app to regenerate next-env.d.ts:
 
 ```bash
-npm run dev
+npm run web:dev
 ```
 
 ## 🧩 Available Scripts

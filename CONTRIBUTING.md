@@ -21,17 +21,24 @@ qa-project/
 1. **Clone the repository**:
 
 ```bash
-git clone https://github.com/your-username/qa-project.git
+git clone https://github.com/Zilola-Nazarova/qa-project.git
 cd qa-project
 ```
 
 2. **Install dependencies**:
 
 ```bash
-npm run bootstrap
+npm install
 ```
 
-3. **Start development server**:
+3. **Setup your env vars**:
+
+```bash
+cp .env.example .env
+cp apps/web/.env.local.example apps/web/.env.local
+```
+
+4. **Start development server (it regenerates next-env.d.ts)**:
 
 ```bash
 npm run web:dev
@@ -42,9 +49,13 @@ npm run web:dev
 ```bash
 npm run web:dev      # Start the frontend
 npm run ai:dev       # (Planned) Start AI service
+npm run web:build    # Build the web app
+npm run ai:build     # (Planned) Build the AI service
 npm run build        # Build web + ai-service
-npm run lint         # Run all linters (JS + CSS)
-npm run format       # Format code using Prettier
+npm run lint:js      # Lint JS/TS files in the web app
+npm run lint:css     # Lint CSS files in the web app
+npm run lint         # Run both linters (JS + CSS)
+npm run format       # Format the web app with Prettier
 npm run validate     # Run lint + format together
 ```
 
