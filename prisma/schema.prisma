@@ -41,7 +41,11 @@ model Account {
   providerAccountId   String
   refreshToken        String?
   accessToken         String?
+  tokenType           String?
   accessTokenExpires  DateTime?
+  scope               String?
+  idToken             String?
+  sessionState        String?
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 
