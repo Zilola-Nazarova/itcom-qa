@@ -1,21 +1,21 @@
-import type { Question } from '@/types/types'
+import type { QuestionWithAuthor } from '@/types'
 
 type Props = {
-  questions: Question[];
+  questions: QuestionWithAuthor[];
 };
 
 export default function QuestionList({ questions }: Props) {
   return (
     <>
       <ul>
-        {questions.map((question: Question) => {
+        {questions.map((question: QuestionWithAuthor) => {
           console.log(question);
           return (
             <li key={question.id}>
               <div>
                 <h3>{question.title}</h3>
                 <p>{question.content.slice(0, 20)}...</p>
-                <span>Date: {question.createdAt}</span>
+                <span>{question.createdAt.toLocaleDateString()}</span>
                 <br />
                 <span>{question.author.name}</span>
               </div>

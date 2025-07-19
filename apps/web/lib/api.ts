@@ -1,6 +1,6 @@
-import type { Question } from '@/types/types'
+import type { QuestionWithAuthor } from "@/types";
 
-export  async function getQuestions(): Promise<Question[]> {
+export  async function getQuestions(): Promise<QuestionWithAuthor[]> {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/questions`, {
       next: { revalidate: 0 },
