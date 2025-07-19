@@ -1,13 +1,19 @@
 import type { Question } from '@/types/types'
 
 export  async function getQuestions(): Promise<Question[]> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/questions`, {
-    next: { revalidate: 0 },
-  })
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/questions`, {
+      next: { revalidate: 0 },
+    })
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch questions");
+    if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(errorData.error || 'Unknown error from questions API');
+    }
+
+    return res.json();
+  } catch (err: any) {
+    console.error('Client-side API error in getQuestions():', err.message);
+    throw new Error(`Client fetch failed: ${err.message}`);
   }
-
-  return res.json();
 }
