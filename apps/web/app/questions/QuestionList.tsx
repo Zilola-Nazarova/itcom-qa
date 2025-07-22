@@ -1,5 +1,5 @@
-import type { QuestionWithAuthor } from '@/types'
-import Link from 'next/link';
+import type { QuestionWithAuthor } from "@/types";
+import Link from "next/link";
 
 type Props = {
   questions: QuestionWithAuthor[];
@@ -23,12 +23,10 @@ export default function QuestionList({ questions }: Props) {
                 </div>
               </Link>
             </li>
-          )
+          );
         })}
       </ul>
-      {questions.length === 0 && (
-        <p>There are no questions!</p>
-      )}
+      {questions.length === 0 && <p>There are no questions!</p>}
     </>
   );
 }

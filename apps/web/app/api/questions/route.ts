@@ -1,5 +1,5 @@
-import { NextResponse } from 'next/server'
-import prisma from '@/lib/prisma'
+import { NextResponse } from "next/server";
+import prisma from "@/lib/prisma";
 
 export async function GET() {
   try {
@@ -7,17 +7,20 @@ export async function GET() {
       include: {
         author: {
           select: { name: true },
-        } 
+        },
       },
-      orderBy: { createdAt: 'desc' },
-    })
+      orderBy: { createdAt: "desc" },
+    });
 
     return NextResponse.json(questions);
-  } catch (err : any) {
-    console.error('API Route Error in questions/route.ts:', err);
+  } catch (err: any) {
+    console.error("API Route Error in questions/route.ts:", err);
 
     return NextResponse.json(
-      { error: 'Failed to fetch questions (route handler)', details: err.message },
+      {
+        error: "Failed to fetch questions (route handler)",
+        details: err.message,
+      },
       { status: 500 }
     );
   }

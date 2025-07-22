@@ -12,7 +12,7 @@ export default function SignInPage() {
   return (
     <div>
       <h2>Sign In Page</h2>
-      
+
       <FaGithub size={24} />
       <button onClick={() => signIn("google", { callbackUrl })}>
         Sign in with Google

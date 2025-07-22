@@ -6,7 +6,7 @@ import type {
   Vote,
   Tag,
   QuestionTag,
-} from '@/lib/db';
+} from "@/lib/db";
 
 export type FullComment = Comment & {
   author: User;

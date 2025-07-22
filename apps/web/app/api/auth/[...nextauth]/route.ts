@@ -31,22 +31,25 @@ const handler = NextAuth({
         return false;
       }
 
-      if (!process.env.AUTH_SECRET) throw new Error("Missing AUTH_SECRET in env");
+      if (!process.env.AUTH_SECRET)
+        throw new Error("Missing AUTH_SECRET in env");
 
       const isEmailVerified =
-        account.provider === "google" ? profile?.email_verified :
-        account.provider === "github" ? true : 
-        false;
-  
+        account.provider === "google"
+          ? profile?.email_verified
+          : account.provider === "github"
+            ? true
+            : false;
+
       if (!isEmailVerified) {
         console.warn("Email not verified. Rejecting sign in.");
         return false;
       }
-  
+
       const existingUser = await prisma.user.findUnique({
         where: { email: user.email || "" },
       });
-  
+
       if (existingUser) {
         const existingAccount = await prisma.account.findFirst({
           where: {
@@ -54,7 +57,7 @@ const handler = NextAuth({
             providerType: account.provider,
           },
         });
-  
+
         if (!existingAccount) {
           await prisma.account.create({
             data: {
@@ -66,19 +69,21 @@ const handler = NextAuth({
               tokenType: account.token_type,
               idToken: account.id_token,
               refreshToken: account.refresh_token,
-              accessTokenExpires: account.expires_at ? new Date(account.expires_at * 1000) : null,
+              accessTokenExpires: account.expires_at
+                ? new Date(account.expires_at * 1000)
+                : null,
               scope: account.scope,
               sessionState: account.session_state,
             },
           });
         }
-  
+
         user.id = existingUser.id;
       }
-  
+
       return true;
     },
-  }
+  },
 });
 
 export { handler as GET, handler as POST };

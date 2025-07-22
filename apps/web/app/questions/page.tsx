@@ -7,9 +7,9 @@ export default async function QuestionsPage() {
   try {
     questions = await getQuestions();
   } catch (err: any) {
-    console.error('Error loading questions page:', err.message);
+    console.error("Error loading questions page:", err.message);
     return (
-      <main className="text-center text-red-500 mt-4">
+      <main>
         Failed to load questions. Please try again later.
       </main>
     );
@@ -19,7 +19,9 @@ export default async function QuestionsPage() {
     <main>
       <nav>
         <h2>Questions</h2>
-        <p><small>Currently open questions.</small></p>
+        <p>
+          <small>Currently open questions.</small>
+        </p>
       </nav>
 
       <QuestionList questions={questions} />
