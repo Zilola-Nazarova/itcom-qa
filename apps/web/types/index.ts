@@ -33,3 +33,7 @@ export type FullQuestion = Question & {
 export type QuestionWithAuthor = Question & {
   author: User;
 };
+
+export type PageProps = {
+  params: { id: string };
+};

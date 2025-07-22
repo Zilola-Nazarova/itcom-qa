@@ -1,4 +1,4 @@
-import QuestionList from "../components/QuestionList";
+import QuestionList from "./QuestionList";
 import { getQuestions } from "@/lib/api";
 
 export default async function QuestionsPage() {
