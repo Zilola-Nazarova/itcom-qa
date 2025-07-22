@@ -6,8 +6,12 @@ export default async function QuestionsPage() {
 
   try {
     questions = await getQuestions();
-  } catch (err: any) {
-    console.error("Error loading questions page:", err.message);
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.error("Error loading questions page:", err.message);
+    } else {
+      console.error('Unexpected error', err);
+    }
     return (
       <main>
         Failed to load questions. Please try again later.

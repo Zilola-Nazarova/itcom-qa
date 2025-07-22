@@ -13,15 +13,18 @@ export async function GET() {
     });
 
     return NextResponse.json(questions);
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("API Route Error in questions/route.ts:", err);
-
-    return NextResponse.json(
-      {
-        error: "Failed to fetch questions (route handler)",
-        details: err.message,
-      },
-      { status: 500 }
-    );
+    if (err instanceof Error) {
+      return NextResponse.json(
+        {
+          error: "Failed to fetch questions (route handler)",
+          details: err.message,
+        },
+        { status: 500 }
+      );
+    } else {
+      console.error('Unexpected error', err);
+    }
   }
 }
