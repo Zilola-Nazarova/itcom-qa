@@ -15,6 +15,7 @@ model User {
   createdAt     DateTime   @default(now())
   emailVerified DateTime?
   updatedAt     DateTime   @updatedAt
+  image         String?
   accounts      Account[]
   answers       Answer[]
   comments      Comment[]
@@ -26,32 +27,32 @@ model User {
 model Account {
   id                 String    @id @default(cuid())
   userId             String
-  providerType       String
-  providerId         String
+  provider           String
+  type               String
   providerAccountId  String
-  refreshToken       String?
-  accessToken        String?
-  accessTokenExpires DateTime?
+  refresh_token      String?   @map("refreshToken")
+  access_token       String?   @map("accessToken")
+  expires_at         Int?      @map("accessTokenExpires")
   createdAt          DateTime  @default(now())
   updatedAt          DateTime  @updatedAt
-  idToken            String?
+  id_token           String?   @map("idToken")
   scope              String?
-  sessionState       String?
-  tokenType          String?
+  session_stat       String?   @map("sessionState")
+  token_type         String?   @map("tokenType")
+
   user               User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([providerId, providerAccountId])
+  @@unique([provider, providerAccountId])
 }
 
 model Session {
-  id           String   @id @default(cuid())
-  userId       String
-  expires      DateTime
-  sessionToken String   @unique
-  accessToken  String   @unique
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id            String   @id @default(cuid())
+  userId        String
+  expires       DateTime  
+  sessionToken  String   @unique
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model VerificationToken {
