@@ -1,8 +1,13 @@
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+
 import Link from "next/link";
 import Image from "next/image";
 import Logo from "./itcom-logo.png";
 
-export default function Header() {
+export default async function Header() {
+  const session = await getServerSession(authOptions);
+
   return (
     <header>
       <nav>
@@ -14,9 +19,16 @@ export default function Header() {
           placeholder="blur"
         />
         <h1>IT Community Q&A Platform</h1>
-        <Link href="/signin">Sign In</Link>
+        { session ? (
+          <>
+            <Link href="/profile">Profile</Link>
+            <Link href="/signout">Sign Out</Link>
+          </>
+        ) : (
+          <Link href="/signin">Sign In</Link>
+        )}
         <Link href="/search">Search</Link>
-        <Link href="/ask">Ask a Question</Link>
+        { session && <Link href="/ask">Ask a Question</Link> }
         <Link href="/">Home</Link>
       </nav>
     </header>
