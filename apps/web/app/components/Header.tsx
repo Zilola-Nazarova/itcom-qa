@@ -1,5 +1,6 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import SignOutButton from "./SignOutButton";
 
 import Link from "next/link";
 import Image from "next/image";
@@ -22,7 +23,7 @@ export default async function Header() {
         { session ? (
           <>
             <Link href="/profile">Profile</Link>
-            <Link href="/signout">Sign Out</Link>
+            <SignOutButton />
           </>
         ) : (
           <Link href="/signin">Sign In</Link>
