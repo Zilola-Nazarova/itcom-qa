@@ -35,7 +35,7 @@ export async function GET(
         { status: 500 }
       );
     } else {
-      console.error('Unexpected error', err);
+      console.error("Unexpected error", err);
     }
   }
 }

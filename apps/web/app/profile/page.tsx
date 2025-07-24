@@ -12,16 +12,17 @@ export default async function ProfilePage() {
 
   return (
     <>
-      {session.user.image&&<Image
-        src={session.user.image}
-        alt="User Profile Image"
-        height={70}
-        width={70}
-        quality={100}
-      />}
+      {session.user.image && (
+        <Image
+          src={session.user.image}
+          alt="User Profile Image"
+          height={70}
+          width={70}
+          quality={100}
+        />
+      )}
       <h2>{session.user.name}</h2>
       <h3>{session.user.email}</h3>
     </>
-
   );
 }

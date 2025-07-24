@@ -10,13 +10,9 @@ export default async function QuestionsPage() {
     if (err instanceof Error) {
       console.error("Error loading questions page:", err.message);
     } else {
-      console.error('Unexpected error', err);
+      console.error("Unexpected error", err);
     }
-    return (
-      <main>
-        Failed to load questions. Please try again later.
-      </main>
-    );
+    return <main>Failed to load questions. Please try again later.</main>;
   }
 
   return (

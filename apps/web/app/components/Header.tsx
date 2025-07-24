@@ -20,7 +20,7 @@ export default async function Header() {
           placeholder="blur"
         />
         <h1>IT Community Q&A Platform</h1>
-        { session ? (
+        {session ? (
           <>
             <Link href="/profile">Profile</Link>
             <SignOutButton />
@@ -29,7 +29,7 @@ export default async function Header() {
           <Link href="/signin">Sign In</Link>
         )}
         <Link href="/search">Search</Link>
-        { session && <Link href="/ask">Ask a Question</Link> }
+        {session && <Link href="/ask">Ask a Question</Link>}
         <Link href="/">Home</Link>
       </nav>
     </header>

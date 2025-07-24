@@ -22,13 +22,13 @@ export const authOptions: NextAuthOptions = {
   session: { strategy: "database" },
   pages: {
     signIn: "/signin",
-    error: "/auth/error"
+    error: "/auth/error",
   },
   callbacks: {
     async signIn({ user, account, profile }) {
       if (!account || !profile || !user?.email) {
         console.warn("Sign-in error: Missing account, profile, or user email");
-        return '/auth/error?error=MissingData';
+        return "/auth/error?error=MissingData";
       }
 
       const isEmailVerified =
@@ -43,17 +43,18 @@ export const authOptions: NextAuthOptions = {
         return `/auth/error?error=EmailNotVerified&provider=${account.provider}`;
       }
 
-      console.log('🔑 user:', user)
-      console.log('🔗 account:', account)
-      console.log('🧾 profile:', profile)
+      console.log("🔑 user:", user);
+      console.log("🔗 account:", account);
+      console.log("🧾 profile:", profile);
 
       if (account.providerAccountId && user.email) {
-        console.log(`Successful login via ${account.provider} for ${user.email}`);
+        console.log(
+          `Successful login via ${account.provider} for ${user.email}`
+        );
       }
 
       return Promise.resolve(true);
-    }
-  ,
+    },
     async session({ session, user }) {
       console.log("Session callback — user:", user);
       console.log("Session callback — session:", session);
@@ -62,5 +63,5 @@ export const authOptions: NextAuthOptions = {
       }
       return session;
     },
-  }
-}
+  },
+};

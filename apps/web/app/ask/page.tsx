@@ -15,6 +15,5 @@ export default async function AskPage() {
       <h2>PROTECTED: Ask a Question</h2>
       <AskQuestionForm />
     </>
-
   );
 }

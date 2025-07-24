@@ -26,7 +26,7 @@ export async function GET() {
         { status: 500 }
       );
     } else {
-      console.error('Unexpected error', err);
+      console.error("Unexpected error", err);
     }
   }
 }
@@ -58,6 +58,9 @@ export async function POST(req: Request) {
     return NextResponse.json(newQuestion);
   } catch (err) {
     console.error(err);
-    return NextResponse.json({ error: "Failed to post question" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to post question" },
+      { status: 500 }
+    );
   }
 }
