@@ -1,16 +1,23 @@
 import prisma from '../apps/web/lib/prisma'
+import type { Question, Answer } from '../apps/web/lib/db';
 
 async function main() {
-  await prisma.answer.deleteMany()
-  await prisma.question.deleteMany()
-  await prisma.user.deleteMany()
+  console.log('🌱 Seeding database...');
+
+  await prisma.comment.deleteMany();
+  await prisma.vote.deleteMany();
+  await prisma.questionTag.deleteMany();
+  await prisma.answer.deleteMany();
+  await prisma.question.deleteMany();
+  await prisma.tag.deleteMany();
+  await prisma.user.deleteMany();
 
   const alice = await prisma.user.create({
     data: {
-      name: 'Alice',
+      name: 'Alice Example',
       email: 'alice@example.com',
     },
-  })
+  });
 
   const bob = await prisma.user.create({
     data: {
@@ -19,7 +26,6 @@ async function main() {
     },
   })
 
-  // Create tags
   const [nextjs, api, postgres, tailwind] = await Promise.all([
     prisma.tag.create({ data: { name: 'nextjs' } }),
     prisma.tag.create({ data: { name: 'api' } }),
@@ -27,39 +33,49 @@ async function main() {
     prisma.tag.create({ data: { name: 'tailwind' } }),
   ])
 
-  const question = await prisma.question.create({
-    data: {
-      title: 'Why is my Next.js API route not working?',
-      content: 'I created an API route under /pages/api/hello.js but it doesn’t seem to work.',
-      authorId: alice.id,
-      tags: {
-        create: [
-          { tagId: nextjs.id },
-          { tagId: api.id },
-        ],
-      },
-    },
-  })
+  let questions: Question[] = [];
+  let answers: Answer[] = [];
 
-  const answer = await prisma.answer.create({
-    data: {
-      content: 'Make sure your file is named correctly and placed under /pages/api.',
-      authorId: bob.id,
-      questionId: question.id,
-    },
-  })
+  for (let i = 1; i <= 3; i++) {
+    const question = await prisma.question.create({
+      data: {
+        title: `How do I solve problem #${i}?`,
+        content: `I’m struggling with problem #${i}. Any advice?`,
+        authorId: alice.id,
+        tags: {
+          create: [
+            { tagId: nextjs.id },
+            { tagId: api.id },
+          ],
+        },
+      },
+    });
+
+    questions[i] = question;
+
+    for (let j = 1; j <= 2; j++) {
+      const answer = await prisma.answer.create({
+        data: {
+          content: `This is answer #${j} for question #${i}.`,
+          authorId: bob.id,
+          questionId: question.id,
+        },
+      });
+      answers[i+j] = answer;
+    }
+  }
 
   await prisma.comment.createMany({
     data: [
       {
         content: 'Did you restart the dev server?',
         authorId: bob.id,
-        questionId: question.id,
+        questionId: questions[1].id,
       },
       {
         content: 'Thanks, that worked!',
-        authorId: alice.id,
-        answerId: answer.id,
+        authorId: bob.id,
+        answerId: answers[2].id,
       },
     ],
   })
@@ -69,12 +85,12 @@ async function main() {
       {
         value: 1,
         userId: bob.id,
-        questionId: question.id,
+        questionId: questions[1].id,
       },
       {
-        value: 1,
+        value: -1,
         userId: alice.id,
-        answerId: answer.id,
+        answerId: answers[2].id,
       },
     ],
   })
@@ -84,9 +100,9 @@ async function main() {
 
 main()
   .catch((e) => {
-    console.error(e)
-    process.exit(1)
+    console.error(e);
+    process.exit(1);
   })
   .finally(async () => {
-    await prisma.$disconnect()
-  })
+    await prisma.$disconnect();
+  });
