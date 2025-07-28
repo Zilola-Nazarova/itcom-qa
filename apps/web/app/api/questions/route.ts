@@ -41,19 +41,34 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
 
+    const tags = await Promise.all(
+      body.tags.map(async (tagName: string) =>
+        prisma.tag.upsert({
+          where: { name: tagName },
+          update: {},
+          create: { name: tagName },
+        })
+      )
+    );
+
     const newQuestion = await prisma.question.create({
       data: {
         title: body.title,
         content: body.content,
-        tags: {
-          connectOrCreate: body.tags.map((tag: string) => ({
-            where: { name: tag },
-            create: { name: tag },
-          })),
-        },
         author: { connect: { id: session.user.id } },
       },
     });
+
+    await Promise.all(
+      tags.map((tag) =>
+        prisma.questionTag.create({
+          data: {
+            questionId: newQuestion.id,
+            tagId: tag.id,
+          },
+        })
+      )
+    );
 
     return NextResponse.json(newQuestion);
   } catch (err) {
