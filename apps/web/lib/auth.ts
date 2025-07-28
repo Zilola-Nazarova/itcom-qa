@@ -31,16 +31,45 @@ export const authOptions: NextAuthOptions = {
         return "/auth/error?error=MissingData";
       }
 
-      const isEmailVerified =
-        account.provider === "google"
-          ? profile?.email_verified
-          : account.provider === "github"
-            ? true
-            : false;
+      let verifiedEmail: string | undefined = undefined;
 
-      if (!isEmailVerified) {
-        console.warn("Sign-in error: Email not verified");
+      if (account.provider === "google") {
+        if (profile.email_verified) verifiedEmail = profile.email;
+      }
+
+      if (account.provider === "github") {
+        const res = await fetch("https://api.github.com/user/emails", {
+          headers: {
+            Authorization: `token ${account.access_token}`,
+          },
+        });
+
+        const emails = await res.json();
+        const primary = emails.find((e: any) => e.primary && e.verified);
+        if (primary) verifiedEmail = primary.email;
+      }
+
+      if (!verifiedEmail) {
+        console.warn(
+          `Sign-in error: We couldn’t sign you in because your ${account.provider} account doesn’t have a verified email. Please verify your email and try again or use a different provider.`
+        );
         return `/auth/error?error=EmailNotVerified&provider=${account.provider}`;
+      }
+
+      const existingUser = await prisma.user.findUnique({
+        where: { email: verifiedEmail },
+      });
+
+      if (existingUser && !existingUser.emailVerified) {
+        await prisma.user.update({
+          where: { id: existingUser.id },
+          data: { emailVerified: new Date() },
+        });
+      }
+
+      // DOES NOT WORK
+      if (!existingUser) {
+        profile.email_verified = new Date();
       }
 
       console.log("🔑 user:", user);
@@ -56,11 +85,11 @@ export const authOptions: NextAuthOptions = {
       return Promise.resolve(true);
     },
     async session({ session, user }) {
-      console.log("Session callback — user:", user);
-      console.log("Session callback — session:", session);
       if (session.user && user.id) {
         session.user.id = user.id;
       }
+      console.log("Session callback — user:", user);
+      console.log("Session callback — session:", session);
       return session;
     },
   },

@@ -2,7 +2,11 @@ import "next-auth";
 
 declare module "next-auth" {
   interface Profile {
-    email_verified?: boolean;
+    email_verified?: Date | null;
+  }
+
+  interface User {
+    emailVerified?: Date | null;
   }
 
   interface Session {
