@@ -8,29 +8,34 @@ import Logo from "./itcom-logo.png";
 
 export default async function Header() {
   const session = await getServerSession(authOptions);
+  const imageStyle = {
+    border: '1px solid #000',
+    width: '60px',
+    height: 'auto',
+  }
 
   return (
     <header>
-      <nav>
+      <nav className="flex gap-1 items-end p-8">
         <Image
+          style={imageStyle}
           src={Logo}
           alt="IT Community Logo"
-          width={70}
           quality={100}
           placeholder="blur"
         />
-        <h1>IT Community Q&A Platform</h1>
+        <h1 className="bg-lime-200 border">IT Community Q&A Platform</h1>
         {session ? (
           <>
-            <Link href="/profile">Profile</Link>
+            <Link className="bg-green-200 border" href="/profile">Profile</Link>
             <SignOutButton />
           </>
         ) : (
-          <Link href="/signin">Sign In</Link>
+          <Link href="/signin" className="bg-teal-200 border">Sign In</Link>
         )}
-        <Link href="/search">Search</Link>
-        {session && <Link href="/ask">Ask a Question</Link>}
-        <Link href="/">Home</Link>
+        <Link href="/search" className="bg-cyan-200 border">Search</Link>
+        {session && <Link href="/ask" className="bg-sky-200 border">Ask a Question</Link>}
+        <Link href="/" className="bg-blue-200 border">Home</Link>
       </nav>
     </header>
   );

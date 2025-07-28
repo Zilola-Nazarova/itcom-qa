@@ -15,6 +15,7 @@ type FormData = z.infer<typeof schema>;
 
 export default function AskQuestionForm() {
   const { data: session, status } = useSession();
+
   const {
     register,
     handleSubmit,
@@ -32,10 +33,12 @@ export default function AskQuestionForm() {
       },
     });
 
+    const result = await res.json();
+
     if (res.ok) {
       alert("Question submitted!");
     } else {
-      alert("Something went wrong.");
+      throw new Error(result.message || "Something went wrong.");
     }
   };
 
@@ -43,17 +46,17 @@ export default function AskQuestionForm() {
   if (!session) return <p>Please sign in to ask a question.</p>;
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <input {...register("title")} placeholder="Title" />
-      {errors.title && <p>{errors.title.message}</p>}
+    <form className="flex flex-col gap-2 p-8" onSubmit={handleSubmit(onSubmit)}>
+      <input className="bg-red-200 border-2 width-100" {...register("title")} placeholder="Title" />
+      {errors.title && <p className="text-red-500 text-sm">{errors.title.message}</p>}
 
-      <textarea {...register("content")} placeholder="Content" />
-      {errors.content && <p>{errors.content.message}</p>}
+      <textarea className="bg-orange-200 border-2" {...register("content")} placeholder="Content" />
+      {errors.content && <p className="text-red-500 text-sm">{errors.content.message}</p>}
 
-      <input {...register("tags.0")} placeholder="Tag 1" />
-      {errors.tags && <p>{errors.tags.message}</p>}
+      <input className="bg-amber-200 border-2" {...register("tags.0")} placeholder="Tag 1" />
+      {errors.tags && <p className="text-red-500 text-sm">{errors.tags.message}</p>}
 
-      <button type="submit">Ask</button>
+      <button className="bg-yellow-200 border-2" type="submit">Ask</button>
     </form>
   );
 }
