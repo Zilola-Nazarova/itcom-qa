@@ -60,10 +60,10 @@ export const authOptions: NextAuthOptions = {
         where: { email: verifiedEmail },
       });
 
-      if (existingUser && !existingUser.emailVerified) {
+      if (existingUser && !existingUser.email_verified) {
         await prisma.user.update({
           where: { id: existingUser.id },
-          data: { emailVerified: new Date() },
+          data: { email_verified: new Date() },
         });
       }
 
