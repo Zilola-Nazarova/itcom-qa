@@ -24,7 +24,7 @@ export default function CreateQuestionForm() {
     }
   };
 
-  const removeTag = (name: String) => {
+  const removeTag = (name: string) => {
     setTags((prevTags) => prevTags.filter((tag) => tag !== name));
   };
 
