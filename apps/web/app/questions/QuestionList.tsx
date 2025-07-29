@@ -1,17 +1,16 @@
 import type { QuestionWithAuthor } from "@/types";
 import Link from "next/link";
+import { getQuestions } from "@/lib/api";
 
-type Props = {
-  questions: QuestionWithAuthor[];
-};
+export default async function QuestionList() {
+  const questions = await getQuestions();
 
-export default function QuestionList({ questions }: Props) {
   return (
     <>
-      <ul>
+      <ul className="bg-fuchsia-200">
         {questions.map((question: QuestionWithAuthor) => {
           return (
-            <li key={question.id}>
+            <li key={question.id} className="bg-pink-200">
               <Link href={`/questions/${question.id}`}>
                 <div>
                   <h3>{question.title}</h3>

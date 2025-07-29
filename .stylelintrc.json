@@ -9,6 +9,9 @@
       {
         "ignoreAtRules": ["tailwind", "apply", "layer", "variants", "responsive", "screen", "theme"]
       }
-    ]
+    ],
+    "at-rule-no-deprecated": [true, {
+      "ignoreAtRules": ["apply"]
+    }]
   }
 }

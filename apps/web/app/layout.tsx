@@ -18,7 +18,9 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <Header />
-        <SessionWrapper>{children}</SessionWrapper>
+        <main>
+          <SessionWrapper>{children}</SessionWrapper>
+        </main>
         <Footer />
       </body>
     </html>

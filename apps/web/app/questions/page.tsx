@@ -1,22 +1,12 @@
 import QuestionList from "./QuestionList";
-import { getQuestions } from "@/lib/api";
+import { Suspense } from "react";
+import Loading from "../loading";
 
 export default async function QuestionsPage() {
-  let questions;
-
-  try {
-    questions = await getQuestions();
-  } catch (err: unknown) {
-    if (err instanceof Error) {
-      console.error("Error loading questions page:", err.message);
-    } else {
-      console.error("Unexpected error", err);
-    }
-    return <main>Failed to load questions. Please try again later.</main>;
-  }
+  const questionList: React.JSX.Element = await QuestionList();
 
   return (
-    <main>
+    <div>
       <nav>
         <h2>Questions</h2>
         <p>
@@ -24,7 +14,7 @@ export default async function QuestionsPage() {
         </p>
       </nav>
 
-      <QuestionList questions={questions} />
-    </main>
+      <Suspense fallback={<Loading />}>{questionList}</Suspense>
+    </div>
   );
 }

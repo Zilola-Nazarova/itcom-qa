@@ -1,19 +1,19 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import AskQuestionForm from "../components/AskQuestionForm";
+import CreateQuestionForm from "./CreateQuestionForm";
 
-export default async function AskPage() {
+export default async function CreateQuestion() {
   const session = await getServerSession(authOptions);
 
   if (!session) {
-    redirect("/api/signin");
+    redirect("/signin?message=CanNotAsk&callbackUrl=/questions/create");
   }
 
   return (
-    <>
+    <main>
       <h2>PROTECTED: Ask a Question</h2>
-      <AskQuestionForm />
-    </>
+      <CreateQuestionForm />
+    </main>
   );
 }

@@ -8,9 +8,11 @@ import { FaGithub, FaGoogle } from "react-icons/fa";
 export default function SignInPage() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/";
+  const message = searchParams.get("message") || "";
 
   return (
     <div>
+      {message == "CanNotAsk" && <p>Please Sign In to post a question!</p>}
       <h2>Sign In Page</h2>
 
       <FaGoogle size={24} />
