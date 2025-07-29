@@ -2,15 +2,16 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Tag } from "@/lib/db";
 
 export default function CreateQuestionForm() {
   const router = useRouter();
 
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [tags, setTags] = useState([]);
-  const [newTag, setNewTag] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [title, setTitle] = useState<string>("");
+  const [content, setContent] = useState<string>("");
+  const [newTag, setNewTag] = useState<string>("");
+  const [tags, setTags] = useState<string[] | []>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const addTag = () => {
     if (newTag.trim() !== '') {
@@ -19,11 +20,11 @@ export default function CreateQuestionForm() {
     }
   };
 
-  const removeTag = (name) => {
+  const removeTag = (name : String) => {
     setTags(prevTags => prevTags.filter(tag => tag !== name));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     await new Promise(resolve => setTimeout(resolve, 3000))
 

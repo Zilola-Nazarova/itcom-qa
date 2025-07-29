@@ -3,6 +3,8 @@ import { Suspense } from "react";
 import Loading from "../loading";
 
 export default async function QuestionsPage() {
+  const questionList: React.JSX.Element = await QuestionList();
+
   return (
     <div>
       <nav>
@@ -13,7 +15,7 @@ export default async function QuestionsPage() {
       </nav>
 
       <Suspense fallback={<Loading />}>
-        <QuestionList />
+        {questionList}
       </Suspense>
     </div>
   );
