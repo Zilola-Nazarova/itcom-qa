@@ -13,12 +13,12 @@ export default function SignInPage() {
     <div>
       <h2>Sign In Page</h2>
 
-      <FaGithub size={24} />
+      <FaGoogle size={24} />
       <button onClick={() => signIn("google", { callbackUrl })}>
         Sign in with Google
       </button>
 
-      <FaGoogle size={24} />
+      <FaGithub size={24} />
       <button onClick={() => signIn("github", { callbackUrl })}>
         Sign in with GitHub
       </button>
