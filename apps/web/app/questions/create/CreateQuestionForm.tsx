@@ -11,6 +11,11 @@ export default function CreateQuestionForm() {
   const [newTag, setNewTag] = useState<string>("");
   const [tags, setTags] = useState<string[] | []>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [errors, setErrors] = useState<{
+    title: string;
+    content: string;
+    tags: string;
+  }>({ title: "", content: "", tags: "" });
 
   const addTag = () => {
     if (newTag.trim() !== "") {
@@ -25,6 +30,13 @@ export default function CreateQuestionForm() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (tags.length === 0) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        tags: "At least one tag is required",
+      }));
+      return;
+    }
     setIsLoading(true);
 
     const question = { title, content, tags };
@@ -68,6 +80,7 @@ export default function CreateQuestionForm() {
 
       <label className="bg-red-200">
         <span>Tags:</span>
+        {errors.tags && <p>{errors.tags}</p>}
         <ul>
           {tags.map((tag) => (
             <li key={tag} className="flex justify-between">

@@ -41,7 +41,7 @@ export default async function Header() {
           Search
         </Link>
         {session && (
-          <Link href="/ask" className="border bg-sky-200">
+          <Link href="/questions/create" className="border bg-sky-200">
             Ask a Question
           </Link>
         )}
