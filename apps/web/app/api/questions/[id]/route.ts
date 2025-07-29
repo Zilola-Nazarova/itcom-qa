@@ -1,15 +1,12 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
-export async function GET(
-  _req: Request,
-  { params }: { params: { id: string } }
-) {
+export async function GET(_req: Request, { params }: { params: any }) {
+  const { id } = await params;
+
   try {
-    const questions = await prisma.question.findUnique({
-      where: {
-        id: params.id,
-      },
+    const question = await prisma.question.findUnique({
+      where: { id },
       include: {
         author: { select: { name: true } },
         answers: {
@@ -22,7 +19,11 @@ export async function GET(
       },
     });
 
-    return NextResponse.json(questions);
+    if (!question) {
+      return NextResponse.json({ error: "Invalid ID" }, { status: 500 });
+    }
+
+    return NextResponse.json(question);
   } catch (err: unknown) {
     console.error("API Route Error in questions/[id]/route.ts:", err);
 

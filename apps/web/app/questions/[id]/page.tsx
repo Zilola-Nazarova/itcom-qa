@@ -1,8 +1,18 @@
 import { getQuestion } from "@/lib/api";
+import { Question } from "@/lib/db";
 import { PageProps } from "@/types";
 
+export const dynamicParams = true;
+
+export async function generateStaticParams() {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/questions`);
+  const questions = await res.json();
+  return questions.map((q: Question) => ({ id: q.id }));
+}
+
 export default async function QuestionDetails({ params }: PageProps) {
-  const question = await getQuestion(params.id);
+  const { id } = await params;
+  const question = await getQuestion(id);
 
   return (
     <main>

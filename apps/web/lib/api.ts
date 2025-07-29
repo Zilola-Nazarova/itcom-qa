@@ -1,4 +1,5 @@
 import type { QuestionWithAuthor, FullQuestion } from "@/types";
+import { notFound } from "next/navigation";
 
 export async function getQuestions(): Promise<QuestionWithAuthor[]> {
   try {
@@ -31,8 +32,7 @@ export async function getQuestion(id: string): Promise<FullQuestion> {
     );
 
     if (!res.ok) {
-      const errorData = await res.json();
-      throw new Error(errorData.error || "Unknown error from questions API");
+      notFound();
     }
 
     return res.json();
