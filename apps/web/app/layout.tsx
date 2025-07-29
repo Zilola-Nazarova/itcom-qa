@@ -16,9 +16,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="p-6 bg-violet-300">
+      <body>
         <Header />
-        <main className="p-6 bg-purple-200">
+        <main>
           <SessionWrapper>{children}</SessionWrapper>
         </main>
         <Footer />

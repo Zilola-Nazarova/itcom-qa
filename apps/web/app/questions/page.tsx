@@ -1,4 +1,3 @@
-import QuestionList from "./QuestionList";
 import { getQuestions } from "@/lib/api";
 
 export default async function QuestionsPage() {
@@ -6,7 +5,7 @@ export default async function QuestionsPage() {
 
   return (
     <div>
-      <nav className="bg-fuchsia-300 p-6">
+      <nav>
         <h2>Questions</h2>
         <p>
           <small>Currently open questions.</small>

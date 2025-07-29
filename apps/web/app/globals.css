@@ -1,1 +1,29 @@
 @import "tailwindcss";
+
+body {
+  @apply p-6 bg-violet-300
+}
+
+main {
+  @apply p-6 bg-purple-200
+}
+
+nav {
+  @apply flex gap-1 items-end p-6
+}
+
+input {
+  @apply border
+}
+
+form {
+  @apply flex flex-col gap-2 p-6
+}
+
+ul {
+  @apply p-6
+}
+
+li {
+  @apply p-3 border
+}

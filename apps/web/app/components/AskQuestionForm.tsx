@@ -46,17 +46,17 @@ export default function AskQuestionForm() {
   if (!session) return <p>Please sign in to ask a question.</p>;
 
   return (
-    <form className="flex flex-col gap-2 p-8" onSubmit={handleSubmit(onSubmit)}>
-      <input className="bg-red-200 border-2 width-100" {...register("title")} placeholder="Title" />
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <input className="bg-red-200" {...register("title")} placeholder="Title" />
       {errors.title && <p className="text-red-500 text-sm">{errors.title.message}</p>}
 
-      <textarea className="bg-orange-200 border-2" {...register("content")} placeholder="Content" />
+      <textarea className="bg-orange-200" {...register("content")} placeholder="Content" />
       {errors.content && <p className="text-red-500 text-sm">{errors.content.message}</p>}
 
-      <input className="bg-amber-200 border-2" {...register("tags.0")} placeholder="Tag 1" />
+      <input className="bg-amber-200" {...register("tags.0")} placeholder="Tag 1" />
       {errors.tags && <p className="text-red-500 text-sm">{errors.tags.message}</p>}
 
-      <button className="bg-yellow-200 border-2" type="submit">Ask</button>
+      <button className="bg-yellow-200" type="submit">Ask</button>
     </form>
   );
 }

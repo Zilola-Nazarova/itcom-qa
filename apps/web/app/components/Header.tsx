@@ -16,7 +16,7 @@ export default async function Header() {
 
   return (
     <header>
-      <nav className="flex gap-1 items-end p-8">
+      <nav>
         <Image
           style={imageStyle}
           src={Logo}
