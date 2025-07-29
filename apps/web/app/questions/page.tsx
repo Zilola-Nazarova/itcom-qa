@@ -16,8 +16,8 @@ export default async function QuestionsPage() {
   }
 
   return (
-    <main>
-      <nav>
+    <div>
+      <nav className="bg-fuchsia-300 p-6">
         <h2>Questions</h2>
         <p>
           <small>Currently open questions.</small>
@@ -25,6 +25,6 @@ export default async function QuestionsPage() {
       </nav>
 
       <QuestionList questions={questions} />
-    </main>
+    </div>
   );
 }

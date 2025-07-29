@@ -8,10 +8,10 @@ type Props = {
 export default function QuestionList({ questions }: Props) {
   return (
     <>
-      <ul>
+      <ul className="bg-fuchsia-200 p-6">
         {questions.map((question: QuestionWithAuthor) => {
           return (
-            <li key={question.id}>
+            <li key={question.id} className="bg-pink-200 p-3 border">
               <Link href={`/questions/${question.id}`}>
                 <div>
                   <h3>{question.title}</h3>
