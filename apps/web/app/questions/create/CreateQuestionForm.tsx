@@ -2,7 +2,6 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Tag } from "@/lib/db";
 
 export default function CreateQuestionForm() {
   const router = useRouter();
@@ -14,26 +13,21 @@ export default function CreateQuestionForm() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const addTag = () => {
-    if (newTag.trim() !== '') {
-      setTags(prevTags => [...prevTags, newTag]);
-      setNewTag('');
+    if (newTag.trim() !== "") {
+      setTags((prevTags) => [...prevTags, newTag]);
+      setNewTag("");
     }
   };
 
-  const removeTag = (name : String) => {
-    setTags(prevTags => prevTags.filter(tag => tag !== name));
+  const removeTag = (name: String) => {
+    setTags((prevTags) => prevTags.filter((tag) => tag !== name));
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    await new Promise(resolve => setTimeout(resolve, 3000))
-
     setIsLoading(true);
-    await new Promise(resolve => setTimeout(resolve, 3000))
 
-    const question = {
-      title, content, tags
-    }
+    const question = { title, content, tags };
 
     const res = await fetch("/api/questions", {
       method: "POST",
@@ -45,7 +39,7 @@ export default function CreateQuestionForm() {
 
     if (res.ok) {
       alert("Question submitted!");
-      router.push("/questions")
+      router.push("/questions");
     } else {
       throw new Error(result.message || "Something went wrong.");
     }
@@ -75,7 +69,7 @@ export default function CreateQuestionForm() {
       <label className="bg-red-200">
         <span>Tags:</span>
         <ul>
-          {tags.map(tag => (
+          {tags.map((tag) => (
             <li key={tag} className="flex justify-between">
               {tag}
               <button onClick={() => removeTag(tag)}>Remove</button>

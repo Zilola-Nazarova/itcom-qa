@@ -9,10 +9,10 @@ import Logo from "./itcom-logo.png";
 export default async function Header() {
   const session = await getServerSession(authOptions);
   const imageStyle = {
-    border: '1px solid #000',
-    width: '60px',
-    height: 'auto',
-  }
+    border: "1px solid #000",
+    width: "60px",
+    height: "auto",
+  };
 
   return (
     <header>
@@ -24,18 +24,30 @@ export default async function Header() {
           quality={100}
           placeholder="blur"
         />
-        <h1 className="bg-lime-200 border">IT Community Q&A Platform</h1>
+        <h1 className="border bg-lime-200">IT Community Q&A Platform</h1>
         {session ? (
           <>
-            <Link className="bg-green-200 border" href="/profile">Profile</Link>
+            <Link className="border bg-green-200" href="/profile">
+              Profile
+            </Link>
             <SignOutButton />
           </>
         ) : (
-          <Link href="/signin" className="bg-teal-200 border">Sign In</Link>
+          <Link href="/signin" className="border bg-teal-200">
+            Sign In
+          </Link>
         )}
-        <Link href="/search" className="bg-cyan-200 border">Search</Link>
-        {session && <Link href="/ask" className="bg-sky-200 border">Ask a Question</Link>}
-        <Link href="/" className="bg-blue-200 border">Home</Link>
+        <Link href="/search" className="border bg-cyan-200">
+          Search
+        </Link>
+        {session && (
+          <Link href="/ask" className="border bg-sky-200">
+            Ask a Question
+          </Link>
+        )}
+        <Link href="/" className="border bg-blue-200">
+          Home
+        </Link>
       </nav>
     </header>
   );

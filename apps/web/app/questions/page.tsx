@@ -14,9 +14,7 @@ export default async function QuestionsPage() {
         </p>
       </nav>
 
-      <Suspense fallback={<Loading />}>
-        {questionList}
-      </Suspense>
+      <Suspense fallback={<Loading />}>{questionList}</Suspense>
     </div>
   );
 }

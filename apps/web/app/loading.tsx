@@ -4,5 +4,5 @@ export default function Loading() {
       <h2 className="text-primary">Loading...</h2>
       <p>Hopefully not for too long :)</p>
     </main>
-  )
+  );
 }
