@@ -1,8 +1,8 @@
-import { getQuestions } from "@/lib/api";
+import QuestionList from "./QuestionList";
+import { Suspense } from "react";
+import Loading from "../loading";
 
 export default async function QuestionsPage() {
-  const questions = await getQuestions();
-
   return (
     <div>
       <nav>
@@ -12,7 +12,9 @@ export default async function QuestionsPage() {
         </p>
       </nav>
 
-      <QuestionList questions={questions} />
+      <Suspense fallback={<Loading />}>
+        <QuestionList />
+      </Suspense>
     </div>
   );
 }

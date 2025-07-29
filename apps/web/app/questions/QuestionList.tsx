@@ -1,11 +1,10 @@
 import type { QuestionWithAuthor } from "@/types";
 import Link from "next/link";
+import { getQuestions } from "@/lib/api";
 
-type Props = {
-  questions: QuestionWithAuthor[];
-};
+export default async function QuestionList() {
+  const questions = await getQuestions();
 
-export default function QuestionList({ questions }: Props) {
   return (
     <>
       <ul className="bg-fuchsia-200">
