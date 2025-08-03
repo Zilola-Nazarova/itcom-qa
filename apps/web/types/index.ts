@@ -37,3 +37,9 @@ export type QuestionWithAuthor = Question & {
 export type PageProps = {
   params: { id: string };
 };
+
+export type VotesCount = {
+  resourceId: string;
+  likes: number;
+  dislikes: number;
+};

@@ -1,10 +1,27 @@
-import type { QuestionWithAuthor, FullQuestion } from "@/types";
+import type { QuestionWithAuthor, FullQuestion, VotesCount } from "@/types";
 import { notFound } from "next/navigation";
 
 export async function getQuestions(): Promise<QuestionWithAuthor[]> {
   const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/questions`, {
     next: { revalidate: 0 },
   });
+
+  return res.json();
+}
+
+export async function getVotes(
+  questionId: string | null,
+  answerId: string | null
+): Promise<VotesCount> {
+  const resource = questionId ? "question" : "answer";
+  const resourceId = questionId ? questionId : answerId;
+
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/votes/${resource}/${resourceId}`,
+    {
+      next: { revalidate: 0 },
+    }
+  );
 
   return res.json();
 }
