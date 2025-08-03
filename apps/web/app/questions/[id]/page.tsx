@@ -1,6 +1,7 @@
 import { getQuestion } from "@/lib/api";
 import { Question } from "@/lib/db";
 import { PageProps } from "@/types";
+import Votes from "@/app/votes/Votes";
 
 export const dynamicParams = true;
 
@@ -13,6 +14,10 @@ export async function generateStaticParams() {
 export default async function QuestionDetails({ params }: PageProps) {
   const { id } = await params;
   const question = await getQuestion(id);
+  const questionVotes: React.JSX.Element = await Votes({
+    questionId: id,
+    answerId: null,
+  });
 
   return (
     <main>
@@ -21,10 +26,23 @@ export default async function QuestionDetails({ params }: PageProps) {
       </nav>
       <h3>{question.content}</h3>
       <small>Created by {question.author.name}</small>
+
+      {questionVotes}
+
       <ul>
         Answers:
-        {question.answers.map((answer) => {
-          return <li key={answer.id}>{answer.content}</li>;
+        {question.answers.map(async (answer) => {
+          const answerVotes: React.JSX.Element = await Votes({
+            questionId: null,
+            answerId: answer.id,
+          });
+
+          return (
+            <li key={answer.id}>
+              <p>{answer.content}</p>
+              {answerVotes}
+            </li>
+          );
         })}
       </ul>
     </main>
