@@ -23,6 +23,11 @@ export async function GET(
           },
           orderBy: { createdAt: "asc" },
         },
+        comments: {
+          include: {
+            author: { select: { name: true } }
+          }
+        },
         tags: true,
       },
     });
