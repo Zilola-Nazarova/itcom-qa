@@ -5,6 +5,7 @@ import CreateAnswerForm from "./answers/create/CreateAnswerForm";
 import Votes from "@/app/votes/Votes";
 import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
+import CreateCommentForm from "@/app/comments/CreateCommentForm";
 
 export const dynamicParams = true;
 
@@ -62,7 +63,9 @@ export default async function QuestionDetails({ params }: PageProps) {
           );
         })}
       </ul>
-  
+
+      { session && <CreateCommentForm questionId={id} answerId={null} /> }
+
       { session && <CreateAnswerForm questionId={id} /> }
 
       <ul>
@@ -107,6 +110,7 @@ export default async function QuestionDetails({ params }: PageProps) {
                   )
                 })}
               </ul>
+              { session && <CreateCommentForm questionId={null} answerId={answer.id} /> }
             </li>
           );
         })}
