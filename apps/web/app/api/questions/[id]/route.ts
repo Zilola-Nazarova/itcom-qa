@@ -15,6 +15,11 @@ export async function GET(
         answers: {
           include: {
             author: { select: { name: true } },
+            comments: {
+              include: {
+                author: { select: {name: true} }
+              }
+            },
           },
           orderBy: { createdAt: "asc" },
         },
