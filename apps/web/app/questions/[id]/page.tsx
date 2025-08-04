@@ -39,6 +39,26 @@ export default async function QuestionDetails({ params }: PageProps) {
       {questionVotes}
 
       <ul>
+        Comments:
+        {question.comments.map((comment) => {
+          return (
+            <li key={comment.id}>
+            <p>{comment.content}</p>
+            <small>Created by {comment.author.name}</small>
+            <br />
+            <small>{new Date(comment.createdAt).toLocaleDateString()}</small>
+            <small>
+              {" "}
+              at
+              {" "} 
+              {new Date(comment.createdAt).toLocaleTimeString()}
+            </small>
+          </li>
+          );
+        })}
+      </ul>
+  
+      <ul>
         Answers:
         {question.answers.map(async (answer) => {
           const answerVotes: React.JSX.Element = await Votes({
@@ -50,27 +70,36 @@ export default async function QuestionDetails({ params }: PageProps) {
             <li key={answer.id}>
               <p>{answer.content}</p>
               <small>Created by {answer.author.name}</small>
+              <br />
               <small>{new Date(answer.createdAt).toLocaleDateString()}</small>
               <small>
                 {" "}
                 at
+                {" "}
                 {new Date(answer.createdAt).toLocaleTimeString()}
               </small>
+
               {answerVotes}
-              {answer.comments.map((comment) => {
-                return (
-                  <li key={comment.id}>
-                    <p>{comment.content}</p>
-                    <small>Created by {comment.author.name}</small>
-                    <small>{new Date(comment.createdAt).toLocaleDateString()}</small>
-                    <small>
-                      {" "}
-                      at
-                      {new Date(comment.createdAt).toLocaleTimeString()}
-                    </small>
-                  </li>
-                )
-              })}
+
+              <ul>
+                Comments:
+                {answer.comments.map((comment) => {
+                  return (
+                    <li key={comment.id}>
+                      <p>{comment.content}</p>
+                      <small>Created by {comment.author.name}</small>
+                      <br />
+                      <small>{new Date(comment.createdAt).toLocaleDateString()}</small>
+                      <small>
+                        {" "}
+                        at
+                        {" "} 
+                        {new Date(comment.createdAt).toLocaleTimeString()}
+                      </small>
+                    </li>
+                  )
+                })}
+              </ul>
             </li>
           );
         })}
