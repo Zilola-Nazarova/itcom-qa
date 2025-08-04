@@ -26,6 +26,15 @@ export default async function QuestionDetails({ params }: PageProps) {
       </nav>
       <h3>{question.content}</h3>
       <small>Created by {question.author.name}</small>
+      <br />
+      <small>
+        <span>{new Date(question.createdAt).toLocaleDateString()}</span>
+        <span>
+          {" "}
+          at
+          {new Date(question.createdAt).toLocaleTimeString()}
+        </span>
+      </small>
 
       {questionVotes}
 
@@ -40,7 +49,28 @@ export default async function QuestionDetails({ params }: PageProps) {
           return (
             <li key={answer.id}>
               <p>{answer.content}</p>
+              <small>Created by {answer.author.name}</small>
+              <small>{new Date(answer.createdAt).toLocaleDateString()}</small>
+              <small>
+                {" "}
+                at
+                {new Date(answer.createdAt).toLocaleTimeString()}
+              </small>
               {answerVotes}
+              {answer.comments.map((comment) => {
+                return (
+                  <li key={comment.id}>
+                    <p>{comment.content}</p>
+                    <small>Created by {comment.author.name}</small>
+                    <small>{new Date(comment.createdAt).toLocaleDateString()}</small>
+                    <small>
+                      {" "}
+                      at
+                      {new Date(comment.createdAt).toLocaleTimeString()}
+                    </small>
+                  </li>
+                )
+              })}
             </li>
           );
         })}
