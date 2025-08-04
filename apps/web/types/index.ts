@@ -30,8 +30,14 @@ export type FullQuestion = Question & {
   comments: FullComment[];
 };
 
-export type QuestionWithAuthor = Question & {
+export type QuestionWithAuthorAndVotes = Question & {
   author: User;
+  _count: {
+    comments: number;
+    answers: number;
+  }
+  upvotes: number;
+  downvotes: number;
 };
 
 export type PageProps = {

@@ -10,11 +10,42 @@ export async function GET() {
         author: {
           select: { name: true },
         },
+        _count: {
+          select: {
+            comments: true,
+            answers: true,
+          },
+        },
       },
       orderBy: { createdAt: "desc" },
     });
 
-    return NextResponse.json(questions);
+    const voteCounts = await prisma.vote.groupBy({
+      by: ["questionId"],
+      where: { answerId: null },
+      _sum: { value: true },
+      _count: {
+        _all: true,
+      },
+    });
+
+    const result = questions.map((q) => {
+      const voteSummary = voteCounts.find((v) => v.questionId === q.id);
+      const upvotes = voteSummary
+        ? (voteSummary._count._all + (voteSummary._sum.value ?? 0)) / 2
+        : 0;
+      const downvotes = voteSummary
+        ? voteSummary._count._all - upvotes
+        : 0;
+
+      return {
+        ...q,
+        upvotes,
+        downvotes,
+      };
+    });
+
+    return NextResponse.json(result);
   } catch (err: unknown) {
     console.error("API Route Error in questions/route.ts:", err);
     if (err instanceof Error) {
