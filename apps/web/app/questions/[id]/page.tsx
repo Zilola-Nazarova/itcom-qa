@@ -1,7 +1,10 @@
 import { getQuestion } from "@/lib/api";
 import { Question } from "@/lib/db";
 import { PageProps } from "@/types";
+import CreateAnswerForm from "./answers/create/CreateAnswerForm";
 import Votes from "@/app/votes/Votes";
+import { authOptions } from "@/lib/auth";
+import { getServerSession } from "next-auth";
 
 export const dynamicParams = true;
 
@@ -18,6 +21,8 @@ export default async function QuestionDetails({ params }: PageProps) {
     questionId: id,
     answerId: null,
   });
+
+  const session = await getServerSession(authOptions);
 
   return (
     <main>
@@ -58,6 +63,8 @@ export default async function QuestionDetails({ params }: PageProps) {
         })}
       </ul>
   
+      { session && <CreateAnswerForm questionId={id} /> }
+
       <ul>
         Answers:
         {question.answers.map(async (answer) => {
