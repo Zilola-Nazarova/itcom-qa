@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
-export async function POST(
+export async function GET(
   req: Request,
   {
     params,
@@ -32,7 +32,7 @@ export async function POST(
   }
 
   if (!userVote) {
-    return NextResponse.json({ error: "Invalid ID" }, { status: 500 });
+    return NextResponse.json(null);
   }
 
   return NextResponse.json(userVote.value);
