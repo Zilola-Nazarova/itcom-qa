@@ -13,28 +13,28 @@ export async function POST(
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-    const body = await req.json();
-    let newComment;
+  const body = await req.json();
+  let newComment;
 
-    if (resource === "question") {
-      newComment = await prisma.comment.create({
-        data: {
-          content: body.content,
-          author: { connect: { id: session.user.id } },
-          question: { connect: { id: resourceId } },
-          answer: {},
-        },
-      });
-    } else if (resource === "answer") {
-      newComment = await prisma.comment.create({
-        data: {
-          content: body.content,
-          author: { connect: { id: session.user.id } },
-          answer: { connect: { id: resourceId } },
-          question: {},
-        },
-      });
-    }
+  if (resource === "question") {
+    newComment = await prisma.comment.create({
+      data: {
+        content: body.content,
+        author: { connect: { id: session.user.id } },
+        question: { connect: { id: resourceId } },
+        answer: {},
+      },
+    });
+  } else if (resource === "answer") {
+    newComment = await prisma.comment.create({
+      data: {
+        content: body.content,
+        author: { connect: { id: session.user.id } },
+        answer: { connect: { id: resourceId } },
+        question: {},
+      },
+    });
+  }
 
-    return NextResponse.json(newComment);
+  return NextResponse.json(newComment);
 }
