@@ -2,6 +2,8 @@ import { getQuestion } from "@/lib/api";
 import { Question } from "@/lib/db";
 import { PageProps } from "@/types";
 import Votes from "@/app/votes/Votes";
+import QuestionCommentsWrapper from "./QuestionCommentsWrapper";
+import AnswerCommentsWrapper from "./AnswerCommentsWrapper";
 
 export const dynamicParams = true;
 
@@ -24,7 +26,8 @@ export default async function QuestionDetails({ params }: PageProps) {
       <nav>
         <h2>Question Details</h2>
       </nav>
-      <h3>{question.content}</h3>
+      <h3>{question.title}</h3>
+      <p>{question.content}</p>
       <small>Created by {question.author.name}</small>
       <br />
       <small>
@@ -38,26 +41,8 @@ export default async function QuestionDetails({ params }: PageProps) {
 
       {questionVotes}
 
-      <ul>
-        Comments:
-        {question.comments.map((comment) => {
-          return (
-            <li key={comment.id}>
-            <p>{comment.content}</p>
-            <small>Created by {comment.author.name}</small>
-            <br />
-            <small>{new Date(comment.createdAt).toLocaleDateString()}</small>
-            <small>
-              {" "}
-              at
-              {" "} 
-              {new Date(comment.createdAt).toLocaleTimeString()}
-            </small>
-          </li>
-          );
-        })}
-      </ul>
-  
+      <QuestionCommentsWrapper comments={question.comments} />  
+      
       <ul>
         Answers:
         {question.answers.map(async (answer) => {
@@ -81,25 +66,7 @@ export default async function QuestionDetails({ params }: PageProps) {
 
               {answerVotes}
 
-              <ul>
-                Comments:
-                {answer.comments.map((comment) => {
-                  return (
-                    <li key={comment.id}>
-                      <p>{comment.content}</p>
-                      <small>Created by {comment.author.name}</small>
-                      <br />
-                      <small>{new Date(comment.createdAt).toLocaleDateString()}</small>
-                      <small>
-                        {" "}
-                        at
-                        {" "} 
-                        {new Date(comment.createdAt).toLocaleTimeString()}
-                      </small>
-                    </li>
-                  )
-                })}
-              </ul>
+              <AnswerCommentsWrapper comments={answer.comments} />
             </li>
           );
         })}
