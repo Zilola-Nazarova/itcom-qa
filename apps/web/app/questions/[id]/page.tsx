@@ -1,6 +1,13 @@
 import { getQuestion } from "@/lib/api";
 import { Question } from "@/lib/db";
 import { PageProps } from "@/types";
+import CreateAnswerForm from "./answers/create/CreateAnswerForm";
+import Votes from "@/app/votes/Votes";
+import { authOptions } from "@/lib/auth";
+import { getServerSession } from "next-auth";
+import CreateCommentForm from "@/app/comments/CreateCommentForm";
+import QuestionCommentsWrapper from "./QuestionCommentsWrapper";
+import AnswerCommentsWrapper from "./AnswerCommentsWrapper";
 
 export const dynamicParams = true;
 
@@ -13,20 +20,71 @@ export async function generateStaticParams() {
 export default async function QuestionDetails({ params }: PageProps) {
   const { id } = await params;
   const question = await getQuestion(id);
+  const questionVotes: React.JSX.Element = await Votes({
+    questionId: id,
+    answerId: null,
+  });
+
+  const session = await getServerSession(authOptions);
 
   return (
     <main>
       <nav>
         <h2>Question Details</h2>
       </nav>
-      <h3>{question.content}</h3>
+      <h3>{question.title}</h3>
+      <p>{question.content}</p>
       <small>Created by {question.author.name}</small>
+      <br />
+      <small>
+        <span>{new Date(question.createdAt).toLocaleDateString()}</span>
+        <span>
+          {" "}
+          at
+          {new Date(question.createdAt).toLocaleTimeString()}
+        </span>
+      </small>
+
+      {questionVotes}
+
+      <QuestionCommentsWrapper comments={question.comments} />  
+
+      { session && <CreateCommentForm questionId={id} answerId={null} /> }
+
+      { session && <CreateAnswerForm questionId={id} /> }
+    
       <ul>
         Answers:
-        {question.answers.map((answer) => {
-          return <li key={answer.id}>{answer.content}</li>;
+        {question.answers.map(async (answer) => {
+          const answerVotes: React.JSX.Element = await Votes({
+            questionId: null,
+            answerId: answer.id,
+          });
+
+          return (
+            <li key={answer.id}>
+              <p>{answer.content}</p>
+              <small>Created by {answer.author.name}</small>
+              <br />
+              <small>{new Date(answer.createdAt).toLocaleDateString()}</small>
+              <small>
+                {" "}
+                at
+                {" "}
+                {new Date(answer.createdAt).toLocaleTimeString()}
+              </small>
+
+              {answerVotes}
+
+              <AnswerCommentsWrapper comments={answer.comments} />
+
+              { session && <CreateCommentForm questionId={null} answerId={answer.id} /> }
+            </li>
+          );
         })}
       </ul>
+
+      { session && <CreateAnswerForm questionId={id} /> }
     </main>
   );
 }
