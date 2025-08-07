@@ -31,9 +31,5 @@ export async function GET(
     });
   }
 
-  if (!userVote) {
-    return NextResponse.json(null);
-  }
-
-  return NextResponse.json(userVote.value);
+  return NextResponse.json(userVote ? userVote.value : null);
 }
