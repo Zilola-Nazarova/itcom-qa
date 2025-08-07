@@ -35,7 +35,7 @@ export type QuestionWithAuthorAndVotes = Question & {
   _count: {
     comments: number;
     answers: number;
-  }
+  };
   upvotes: number;
   downvotes: number;
 };

@@ -17,8 +17,8 @@ export async function GET(
             author: { select: { name: true } },
             comments: {
               include: {
-                author: { select: {name: true} }
-              }
+                author: { select: { name: true } },
+              },
             },
           },
           orderBy: { createdAt: "asc" },

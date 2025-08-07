@@ -16,14 +16,9 @@ export default function CommentList({ comments }: { comments: FullComment[] }) {
           <small>Created by {comment.author.name}</small>
           <br />
           <small>{new Date(comment.createdAt).toLocaleDateString()}</small>
-          <small>
-            {" "}
-            at{" "}
-            {new Date(comment.createdAt).toLocaleTimeString()}
-          </small>
+          <small> at {new Date(comment.createdAt).toLocaleTimeString()}</small>
         </li>
       ))}
-
       {comments.length > 3 && (
         <button onClick={() => setShowAll(!showAll)}>
           {showAll ? "Show less" : "Show more"}

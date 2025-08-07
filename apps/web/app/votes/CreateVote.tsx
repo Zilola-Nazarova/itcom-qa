@@ -15,7 +15,6 @@ export default function CreateVote({
 
   const [voteStatus, setVoteStatus] = useState<number | null>(value);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [errors, setErrors] = useState<{ content: string }>({ content: "" });
 
   const handleThumb = (value: 1 | -1) => {
     setIsLoading(true);

@@ -34,9 +34,7 @@ export async function GET() {
       const upvotes = voteSummary
         ? (voteSummary._count._all + (voteSummary._sum.value ?? 0)) / 2
         : 0;
-      const downvotes = voteSummary
-        ? voteSummary._count._all - upvotes
-        : 0;
+      const downvotes = voteSummary ? voteSummary._count._all - upvotes : 0;
 
       return {
         ...q,
