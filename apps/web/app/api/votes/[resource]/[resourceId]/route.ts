@@ -83,5 +83,20 @@ export async function POST(
       data: { value },
     });
   }
+
+  if (resource === "answer") {
+    const aggregation = await prisma.vote.aggregate({
+      where: { answerId: resourceId },
+      _sum: { value: true },
+    });
+
+    const voteBalance = aggregation._sum.value ?? 0;
+
+    await prisma.answer.update({
+      where: { id: resourceId },
+      data: { voteBalance },
+    });
+  }
+
   return NextResponse.json({ success: true });
 }
