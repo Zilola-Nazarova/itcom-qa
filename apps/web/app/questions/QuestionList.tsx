@@ -31,6 +31,12 @@ export default async function QuestionList() {
                 <span>Likes: {question.upvotes}</span>
                 <span>Dislikes: {question.downvotes}</span>
               </div>
+              <div>
+                Tags:
+                {question.tags.map((tag) => {
+                  return <span key={tag.id}>{tag.name}</span>
+                })}
+              </div>
             </li>
           );
         })}

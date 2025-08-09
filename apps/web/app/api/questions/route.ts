@@ -7,6 +7,13 @@ export async function GET() {
   try {
     const questions = await prisma.question.findMany({
       include: {
+        tags: {
+          select: {
+            tag: {
+              select: { id: true, name: true }
+            }
+          }
+        },
         author: {
           select: { name: true },
         },
@@ -30,6 +37,7 @@ export async function GET() {
     });
 
     const result = questions.map((q) => {
+      const flatTags = q.tags.map(t => t.tag); 
       const voteSummary = voteCounts.find((v) => v.questionId === q.id);
       const upvotes = voteSummary
         ? (voteSummary._count._all + (voteSummary._sum.value ?? 0)) / 2
@@ -38,6 +46,7 @@ export async function GET() {
 
       return {
         ...q,
+        tags: flatTags,
         upvotes,
         downvotes,
       };
