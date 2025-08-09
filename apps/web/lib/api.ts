@@ -1,16 +1,31 @@
 import type {
-  QuestionWithAuthorAndVotes,
+  QuestionsWithPagination,
   FullQuestion,
   VotesCount,
 } from "@/types";
 import { notFound } from "next/navigation";
 
-export async function getQuestions(): Promise<QuestionWithAuthorAndVotes[]> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/questions`, {
-    next: { revalidate: 0 },
-  });
+export async function getQuestions(
+  query?: string,
+  currentPage?: number,
+  orderBy?: string,
+  tags?: string[],
+  status?: string,
+  sort?: string,
+  limit?: number
+): Promise<QuestionsWithPagination> {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/questions?q=${query}&page=${currentPage}&order_by=${orderBy}&tags=${tags}&status=${status}&sort=${sort}&limit=${limit}`,
+      {
+        next: { revalidate: 0 },
+      });
 
-  return res.json();
+    return res.json();
+  } catch (error) {
+    console.log(error);
+    throw new Error("getQuestions api error");
+  }
 }
 
 export async function getVote(

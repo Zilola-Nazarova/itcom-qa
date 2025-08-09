@@ -32,6 +32,7 @@ export type FullQuestion = Question & {
 
 export type QuestionWithAuthorAndVotes = Question & {
   author: User;
+  tags: Tag[];
   _count: {
     comments: number;
     answers: number;
@@ -39,7 +40,16 @@ export type QuestionWithAuthorAndVotes = Question & {
   upvotes: number;
   downvotes: number;
 };
-
+export type QuestionsWithPagination = QuestionWithAuthorAndVotes[] & {
+  data: QuestionWithAuthorAndVotes[];
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+  pagination: {
+    last_visible_page: number;
+  };
+}
 export type PageProps = {
   params: { id: string };
 };
@@ -49,3 +59,8 @@ export type VotesCount = {
   likes: number;
   dislikes: number;
 };
+
+export type Sort = {
+  value: string;
+  name: string;
+}

@@ -2,13 +2,39 @@ import type { QuestionWithAuthorAndVotes } from "@/types";
 import Link from "next/link";
 import { getQuestions } from "@/lib/api";
 
-export default async function QuestionList() {
-  const questions = await getQuestions();
+export default async function QuestionList(
+  {
+    query,
+    currentPage,
+    orderBy,
+    tags,
+    status,
+    sort,
+    limit,
+  }: {
+    query?: string;
+    currentPage?: number;
+    orderBy?: string;
+    tags?: string[];
+    status?: string;
+    sort?: string;
+    limit?: number;
+  }
+) {
+  const questions = await getQuestions(
+    query,
+    currentPage,
+    orderBy,
+    tags,
+    status,
+    sort,
+    limit
+  );
 
   return (
     <>
       <ul className="bg-fuchsia-200">
-        {questions.map((question: QuestionWithAuthorAndVotes) => {
+        {questions?.data.map((question: QuestionWithAuthorAndVotes) => {
           return (
             <li key={question.id} className="bg-pink-200">
               <Link href={`/questions/${question.id}`}>
