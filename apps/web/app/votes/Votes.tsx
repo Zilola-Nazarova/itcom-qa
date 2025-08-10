@@ -43,7 +43,7 @@ export default function Votes({
       const delta = newValue === 1 ? "likes" : "dislikes";
       const opposite = newValue === 1 ? "dislikes" : "likes";
 
-      let updated = { ...prev };
+      const updated = { ...prev };
 
       if (userVote === newValue) {
         updated[delta] -= 1;
@@ -61,6 +61,7 @@ export default function Votes({
       try {
         await createVote(newStatus, questionId, answerId);
       } catch (error) {
+        console.error(error);
         toast.error("Failed to submit vote. Please try again.");
         setUserVote(userVote);
       }
@@ -79,14 +80,21 @@ export default function Votes({
           <button
             disabled={isPending}
             onClick={() => handleVote(1)}
-            style={{ color: userVote === 1 ? "blue" : "gray", opacity: isPending ? 0.5 : 1 }}
+            style={{
+              color: userVote === 1 ? "blue" : "gray",
+              opacity: isPending ? 0.5 : 1,
+            }}
           >
             Like
           </button>
           <button
             disabled={isPending}
             onClick={() => handleVote(-1)}
-            style={{ color: userVote === -1 ? "blue" : "gray", marginLeft: 8, opacity: isPending ? 0.5 : 1 }}
+            style={{
+              color: userVote === -1 ? "blue" : "gray",
+              marginLeft: 8,
+              opacity: isPending ? 0.5 : 1,
+            }}
           >
             Dislike
           </button>
