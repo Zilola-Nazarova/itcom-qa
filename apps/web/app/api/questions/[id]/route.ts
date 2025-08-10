@@ -21,7 +21,7 @@ export async function GET(
               },
             },
           },
-          orderBy: { createdAt: "asc" },
+          orderBy: { voteBalance: "desc" },
         },
         comments: {
           include: {

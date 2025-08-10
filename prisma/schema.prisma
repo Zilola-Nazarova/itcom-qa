@@ -9,19 +9,19 @@ datasource db {
 }
 
 model User {
-  id             String     @id @default(cuid())
-  email          String     @unique
-  name           String?
-  createdAt      DateTime   @default(now())
-  email_verified DateTime?  @map("emailVerified")
-  updatedAt      DateTime   @updatedAt
-  image          String?
-  accounts       Account[]
-  answers        Answer[]
-  comments       Comment[]
-  questions      Question[]
-  sessions       Session[]
-  votes          Vote[]
+  id            String     @id @default(cuid())
+  email         String     @unique
+  name          String?
+  createdAt     DateTime   @default(now())
+  emailVerified DateTime?
+  updatedAt     DateTime   @updatedAt
+  image         String?
+  accounts      Account[]
+  answers       Answer[]
+  comments      Comment[]
+  questions     Question[]
+  sessions      Session[]
+  votes         Vote[]
 }
 
 model Account {
@@ -34,7 +34,7 @@ model Account {
   updatedAt         DateTime @updatedAt
   id_token          String?  @map("idToken")
   scope             String?
-  session_stat      String?  @map("sessionState")
+  session_state     String?  @map("sessionState")
   token_type        String?  @map("tokenType")
   provider          String
   type              String
@@ -71,6 +71,7 @@ model Question {
   content   String
   createdAt DateTime      @default(now())
   authorId  String
+  updatedAt DateTime      @updatedAt
   answers   Answer[]
   comments  Comment[]
   author    User          @relation(fields: [authorId], references: [id])
@@ -79,15 +80,17 @@ model Question {
 }
 
 model Answer {
-  id         String    @id @default(cuid())
-  content    String
-  createdAt  DateTime  @default(now())
-  questionId String
-  authorId   String
-  author     User      @relation(fields: [authorId], references: [id])
-  question   Question  @relation(fields: [questionId], references: [id])
-  comments   Comment[]
-  votes      Vote[]
+  id          String    @id @default(cuid())
+  content     String
+  createdAt   DateTime  @default(now())
+  questionId  String
+  authorId    String
+  updatedAt   DateTime  @updatedAt
+  voteBalance Int       @default(0)
+  author      User      @relation(fields: [authorId], references: [id])
+  question    Question  @relation(fields: [questionId], references: [id])
+  comments    Comment[]
+  votes       Vote[]
 }
 
 model Comment {
@@ -97,6 +100,7 @@ model Comment {
   authorId   String
   questionId String?
   answerId   String?
+  updatedAt  DateTime  @updatedAt
   answer     Answer?   @relation(fields: [answerId], references: [id])
   author     User      @relation(fields: [authorId], references: [id])
   question   Question? @relation(fields: [questionId], references: [id])

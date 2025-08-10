@@ -19,13 +19,11 @@ export async function generateStaticParams() {
 
 export default async function QuestionDetails({ params }: PageProps) {
   const { id } = await params;
-  const question = await getQuestion(id);
-  const questionVotes: React.JSX.Element = await Votes({
-    questionId: id,
-    answerId: null,
-  });
 
   const session = await getServerSession(authOptions);
+  const userId = session?.user.id ?? null;
+
+  const question = await getQuestion(id);
 
   return (
     <main>
@@ -38,53 +36,41 @@ export default async function QuestionDetails({ params }: PageProps) {
       <br />
       <small>
         <span>{new Date(question.createdAt).toLocaleDateString()}</span>
-        <span>
-          {" "}
-          at
-          {new Date(question.createdAt).toLocaleTimeString()}
-        </span>
+        <span> at {new Date(question.createdAt).toLocaleTimeString()}</span>
       </small>
 
-      {questionVotes}
+      <Votes questionId={id} answerId={null} userId={userId} />
 
-      <QuestionCommentsWrapper comments={question.comments} />  
+      <QuestionCommentsWrapper comments={question.comments} />
 
-      { session && <CreateCommentForm questionId={id} answerId={null} /> }
+      {session && <CreateCommentForm questionId={id} answerId={null} />}
 
-      { session && <CreateAnswerForm questionId={id} /> }
-    
+      {session && <CreateAnswerForm questionId={id} />}
+
       <ul>
         Answers:
         {question.answers.map(async (answer) => {
-          const answerVotes: React.JSX.Element = await Votes({
-            questionId: null,
-            answerId: answer.id,
-          });
-
           return (
             <li key={answer.id}>
               <p>{answer.content}</p>
               <small>Created by {answer.author.name}</small>
               <br />
-              <small>{new Date(answer.createdAt).toLocaleDateString()}</small>
-              <small>
-                {" "}
-                at
-                {" "}
-                {new Date(answer.createdAt).toLocaleTimeString()}
-              </small>
+              <span>{new Date(answer.createdAt).toLocaleDateString()}</span>
+              <span> at {new Date(answer.createdAt).toLocaleTimeString()}</span>
 
-              {answerVotes}
+              <Votes questionId={null} answerId={answer.id} userId={userId} />
 
               <AnswerCommentsWrapper comments={answer.comments} />
 
-              { session && <CreateCommentForm questionId={null} answerId={answer.id} /> }
+              {session && (
+                <CreateCommentForm questionId={null} answerId={answer.id} />
+              )}
             </li>
           );
         })}
       </ul>
 
-      { session && <CreateAnswerForm questionId={id} /> }
+      {session && <CreateAnswerForm questionId={id} />}
     </main>
   );
 }
