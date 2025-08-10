@@ -2,7 +2,7 @@ import QuestionList from "./QuestionList";
 import { Suspense } from "react";
 import Loading from "../loading";
 import FilterByStatus from '../components/FilterByStatus';
-import FilterByType from '../components/FilterByType';
+import FilterByTag from '../components/FilterByTag';
 import Limit from '../components/Limit';
 import Pagination from '../components/Pagination';
 import Search from '../components/Search';
@@ -62,7 +62,7 @@ export default async function QuestionsPage(
         <h2>Questions</h2>
         <div>
           <Search />
-          <FilterByType />
+          <FilterByTag />
           <FilterByStatus />
           <SortByOrder />
           <SortDirection />
