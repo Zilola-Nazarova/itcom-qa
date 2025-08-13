@@ -5,13 +5,14 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 type OrderByProps = { value: string; name: string };
 
 const ORDER_BY = [
-  { value: 'votesCount', name: 'Votes' },
+  { value: 'lastActivity', name: 'Last Activity' },
+  { value: 'date', name: 'Date' },
+  { value: 'score', name: 'Score' },
+  { value: 'votesCount', name: 'Total votes' },
   { value: 'answersCount', name: 'Answers' },
   { value: 'commentsCount', name: 'Comments' },
-  { value: 'date', name: 'Date' },
   { value: 'likes', name: 'Likes' },
   { value: 'dislikes', name: 'Dislikes' },
-  // { value: 'popularity', name: 'Popularity' },
 ];
 
 export default function SortByOrder() {
