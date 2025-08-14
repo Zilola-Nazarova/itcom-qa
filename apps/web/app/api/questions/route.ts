@@ -21,14 +21,11 @@ export async function GET(req: NextRequest) {
   let statusFilter: any = {};
   switch (status) {
     case "no_answers":
-      statusFilter = { _count: { answers: 0 } };
+      statusFilter = { answers: { none: {} } };
       break;
   
     case "no_accepted_answers":
-      statusFilter = {
-        _count: { answers: { gt: 0 } },
-        answers: { every: { isAccepted: false } },
-      };
+      statusFilter = { answers: { some: {}, every: { isAccepted: false } } };
       break;
   
     case "has_accepted_answer":
@@ -37,15 +34,15 @@ export async function GET(req: NextRequest) {
   
     case "unanswered_recent":
       statusFilter = {
-        _count: { answers: 0 },
         createdAt: { gte: new Date(now.getTime() - 24 * 60 * 60 * 1000) },
+        answers: { none: {} },
       };
       break;
   
     case "hot":
       statusFilter = {
         createdAt: { gte: new Date(now.getTime() - 24 * 60 * 60 * 1000) },
-        _count: { answers: { gt: 0 } },
+        answers: { some: {} },
       };
       break;
   }
