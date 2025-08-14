@@ -8,6 +8,7 @@ import { getServerSession } from "next-auth";
 import CreateCommentForm from "@/app/comments/CreateCommentForm";
 import QuestionCommentsWrapper from "./QuestionCommentsWrapper";
 import AnswerCommentsWrapper from "./AnswerCommentsWrapper";
+import Link from "next/link";
 
 export const dynamicParams = true;
 
@@ -30,9 +31,24 @@ export default async function QuestionDetails({ params }: PageProps) {
       <nav>
         <h2>Question Details</h2>
       </nav>
+      <small>{question.author.name}</small>
       <h3>{question.title}</h3>
       <p>{question.content}</p>
-      <small>Created by {question.author.name}</small>
+      <div className="flex flex-wrap gap-2 mt-4">
+        {question.tags.map((tag) => {
+          console.log(tag)
+          const tagName = tag.name;
+          return (
+            <Link
+              key={tag.id}
+              href={`/questions?tags=${encodeURIComponent(tagName)}`}
+              className="inline-block bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full hover:bg-blue-200 transition-colors"
+            >
+              {tagName}
+            </Link>
+          );
+        })}
+      </div>
       <br />
       <small>
         <span>{new Date(question.createdAt).toLocaleDateString()}</span>
