@@ -14,7 +14,7 @@ export const dynamicParams = true;
 export async function generateStaticParams() {
   const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/questions`);
   const questions = await res.json();
-  return questions.map((q: Question) => ({ id: q.id }));
+  return questions?.data.map((q: Question) => ({ id: q.id }));
 }
 
 export default async function QuestionDetails({ params }: PageProps) {
