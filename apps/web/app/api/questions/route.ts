@@ -18,13 +18,7 @@ export async function GET(req: NextRequest) {
 
   try {
     const where: any = {
-      title: {
-        contains: search,
-        mode: "insensitive",
-      },
-      tags: filters.length
-        ? undefined
-        : undefined,
+      title: { contains: search, mode: "insensitive" },
       AND: [
         ...filters.map(tagName => ({
           tags: { some: { tag: { name: tagName } } }
@@ -34,61 +28,92 @@ export async function GET(req: NextRequest) {
 
     const questions = await prisma.question.findMany({
       where,
-      orderBy: {
-        [orderByField]: sort === "asc" ? "asc" : "desc",
-      },
-      take: limit,
-      skip: (page - 1) * limit,
       include: {
-        tags: {
-          select: {
-            tag: {
-              select: { id: true, name: true }
-            }
-          }
-        },
+        tags: { select: { tag: { select: { id: true, name: true } } } },
         author: true,
-        _count: {
-          select: {
-            comments: true,
-            answers: true,
-          },
-        },
+        _count: { select: { comments: true, answers: true } },
+        votes: true,
+        answers: { select: { updatedAt: true } },
+        comments: { select: { updatedAt: true } },
       },
     });
 
-    const total = await prisma.question.count({
-      where
-    });
+    const questionsWithAggregates = questions.map(q => {
+      const flatTags = q.tags.map(t => t.tag);
+      const upvotes = q.votes.filter(v => v.value > 0).length;
+      const downvotes = q.votes.filter(v => v.value < 0).length;
+      const score = upvotes - downvotes;
 
-    const voteCounts = await prisma.vote.groupBy({
-      by: ["questionId"],
-      where: { answerId: null },
-      _sum: { value: true },
-      _count: { _all: true },
-    });
+      const lastActivity = new Date(
+        Math.max(
+          q.updatedAt.getTime(),
+          ...q.answers.map(a => a.updatedAt.getTime()),
+          ...q.comments.map(c => c.updatedAt.getTime())
+        )
+      );
 
-    const questionsWithVotes  = questions.map((q) => {
-      const flatTags = q.tags.map(t => t.tag); 
-      const voteSummary = voteCounts.find((v) => v.questionId === q.id);
-      const upvotes = voteSummary
-        ? (voteSummary._count._all + (voteSummary._sum.value ?? 0)) / 2
-        : 0;
-      const downvotes = voteSummary ? voteSummary._count._all - upvotes : 0;
       return {
         ...q,
         tags: flatTags,
         upvotes,
         downvotes,
+        score,
+        answersCount: q._count.answers,
+        commentsCount: q._count.comments,
+        lastActivity,
       };
     });
 
+    const sortedQuestions = questionsWithAggregates.sort((a, b) => {
+      let aVal, bVal;
+      switch (orderByField) {
+        case "lastActivity":
+          aVal = new Date(a.lastActivity).getTime();
+          bVal = new Date(b.lastActivity).getTime();
+          break;
+        case "date":
+          aVal = new Date(a.createdAt).getTime();
+          bVal = new Date(b.createdAt).getTime();
+          break;
+        case "score":
+          aVal = a.score;
+          bVal = b.score;
+          break;
+        case "votesCount":
+          aVal = a.upvotes + a.downvotes;
+          bVal = b.upvotes + b.downvotes;
+          break;
+        case "answersCount":
+          aVal = a.answersCount;
+          bVal = b.answersCount;
+          break;
+        case "commentsCount":
+          aVal = a.commentsCount;
+          bVal = b.commentsCount;
+          break;
+        case "likes":
+          aVal = a.upvotes;
+          bVal = b.upvotes;
+          break;
+        case "dislikes":
+          aVal = a.downvotes;
+          bVal = b.downvotes;
+          break;
+        default:
+          aVal = new Date(a.createdAt).getTime();
+          bVal = new Date(b.createdAt).getTime();
+      }
+      return sort === "asc" ? aVal - bVal : bVal - aVal;
+    });
+  
+    const paginated = sortedQuestions.slice((page - 1) * limit, page * limit);
+  
     return NextResponse.json({
       page,
       limit,
-      total,
-      totalPages: Math.ceil(total / limit),
-      data: questionsWithVotes,
+      total: questionsWithAggregates.length,
+      totalPages: Math.ceil(questionsWithAggregates.length / limit),
+      data: paginated,
     });
   } catch (err: unknown) {
     console.error("API Route Error in questions/route.ts:", err);
