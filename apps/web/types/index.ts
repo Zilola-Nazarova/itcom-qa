@@ -22,15 +22,15 @@ export type QuestionTagWithTag = QuestionTag & {
   tag: Tag;
 };
 
-export type FullQuestion = Question & {
+export type QuestionDetails = Question & {
   author: User;
-  tags: QuestionTagWithTag[];
+  tags: Tag[];
   answers: FullAnswer[];
   votes: Vote[];
   comments: FullComment[];
 };
 
-export type QuestionWithAuthorAndVotes = Question & {
+export type QuestionsList = Question & {
   author: User;
   tags: Tag[];
   _count: {
@@ -40,8 +40,8 @@ export type QuestionWithAuthorAndVotes = Question & {
   upvotes: number;
   downvotes: number;
 };
-export type QuestionsWithPagination = QuestionWithAuthorAndVotes[] & {
-  data: QuestionWithAuthorAndVotes[];
+export type QuestionsWithPagination = QuestionsList[] & {
+  data: QuestionsList[];
   page: number;
   limit: number;
   total: number;

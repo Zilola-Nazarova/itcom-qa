@@ -1,4 +1,4 @@
-import type { QuestionWithAuthorAndVotes } from "@/types";
+import type { QuestionsList } from "@/types";
 import Link from "next/link";
 import { getQuestions } from "@/lib/api";
 
@@ -34,7 +34,7 @@ export default async function QuestionList(
   return (
     <>
       <ul className="bg-fuchsia-200">
-        {questions?.data.map((question: QuestionWithAuthorAndVotes) => {
+        {questions?.data.map((question: QuestionsList) => {
           return (
             <li key={question.id} className="bg-pink-200">
               <Link href={`/questions/${question.id}`}>

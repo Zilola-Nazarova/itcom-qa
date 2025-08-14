@@ -1,6 +1,6 @@
 import type {
   QuestionsWithPagination,
-  FullQuestion,
+  QuestionDetails,
   VotesCount,
 } from "@/types";
 import { notFound } from "next/navigation";
@@ -88,7 +88,7 @@ export async function createVote(
   return res.json();
 }
 
-export async function getQuestion(id: string): Promise<FullQuestion> {
+export async function getQuestion(id: string): Promise<QuestionDetails> {
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/api/questions/` + id,
     {
