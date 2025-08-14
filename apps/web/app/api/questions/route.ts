@@ -16,16 +16,51 @@ export async function GET(req: NextRequest) {
 
   const filters = tagsParam ? tagsParam.split(',') : [];
 
-  try {
-    const where: any = {
-      title: { contains: search, mode: "insensitive" },
-      AND: [
-        ...filters.map(tagName => ({
-          tags: { some: { tag: { name: tagName } } }
-        }))
-      ]
-    } 
+  const now = new Date();
 
+  let statusFilter: any = {};
+  switch (status) {
+    case "no_answers":
+      statusFilter = { _count: { answers: 0 } };
+      break;
+  
+    case "no_accepted_answers":
+      statusFilter = {
+        _count: { answers: { gt: 0 } },
+        answers: { every: { isAccepted: false } },
+      };
+      break;
+  
+    case "has_accepted_answer":
+      statusFilter = { answers: { some: { isAccepted: true } } };
+      break;
+  
+    case "unanswered_recent":
+      statusFilter = {
+        _count: { answers: 0 },
+        createdAt: { gte: new Date(now.getTime() - 24 * 60 * 60 * 1000) },
+      };
+      break;
+  
+    case "hot":
+      statusFilter = {
+        createdAt: { gte: new Date(now.getTime() - 24 * 60 * 60 * 1000) },
+        _count: { answers: { gt: 0 } },
+      };
+      break;
+  }
+
+  const where: any = {
+    title: { contains: search, mode: "insensitive" },
+    AND: [
+      ...filters.map(tagName => ({
+        tags: { some: { tag: { name: tagName } } }
+      }))
+    ],
+    ...statusFilter,
+  } 
+
+  try {
     const questions = await prisma.question.findMany({
       where,
       include: {
@@ -115,19 +150,9 @@ export async function GET(req: NextRequest) {
       totalPages: Math.ceil(questionsWithAggregates.length / limit),
       data: paginated,
     });
-  } catch (err: unknown) {
-    console.error("API Route Error in questions/route.ts:", err);
-    if (err instanceof Error) {
-      return NextResponse.json(
-        {
-          error: "Failed to fetch questions (route handler)",
-          details: err.message,
-        },
-        { status: 500 }
-      );
-    } else {
-      console.error("Unexpected error", err);
-    }
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ error: "Failed to fetch questions" }, { status: 500 });  
   }
 }
 
@@ -167,11 +192,8 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json(newQuestion);
-  } catch (err) {
-    console.error(err);
-    return NextResponse.json(
-      { error: "Failed to post question" },
-      { status: 500 }
-    );
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ error: "Failed to post question" }, { status: 500 });
   }
 }
