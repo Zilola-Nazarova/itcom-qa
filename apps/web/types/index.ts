@@ -12,6 +12,11 @@ export type FullComment = Comment & {
   author: User;
 };
 
+export type RenderTag = Tag & {
+  questionCount: number;
+  growth: number;
+};
+
 export type FullAnswer = Answer & {
   author: User;
   votes: Vote[];
