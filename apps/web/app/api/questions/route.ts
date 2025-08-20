@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { Prisma } from "@prisma/client";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
@@ -18,7 +19,7 @@ export async function GET(req: NextRequest) {
 
   const now = new Date();
 
-  let statusFilter: any = {};
+  let statusFilter: Prisma.QuestionWhereInput = {};
   switch (status) {
     case "no_answers":
       statusFilter = { answers: { none: {} } };
@@ -47,7 +48,7 @@ export async function GET(req: NextRequest) {
       break;
   }
 
-  const where: any = {
+  const where: Prisma.QuestionWhereInput = {
     title: { contains: search, mode: "insensitive" },
     AND: [
       ...filters.map((tagName) => ({

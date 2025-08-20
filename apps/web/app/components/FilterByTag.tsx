@@ -22,11 +22,10 @@ export default function FilterByTag() {
     fetchTags();
   }, []);
 
-  // Initialize from URL on first mount
   useEffect(() => {
     const urlTags = searchParams.get("tags")?.split(",").filter(Boolean) || [];
     setSelectedTags(urlTags);
-  }, []); // only once
+  }, [searchParams]);
 
   const updateURL = (updatedTags: string[]) => {
     const params = new URLSearchParams(searchParams);

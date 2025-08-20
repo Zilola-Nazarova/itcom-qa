@@ -55,7 +55,7 @@ export default function CreateQuestionForm() {
       setNewTag("");
     }
 
-    if (e.key === 'Backspace' && !newTag && selectedTags.length) {
+    if (e.key === "Backspace" && !newTag && selectedTags.length) {
       e.preventDefault();
       removeTag(selectedTags[selectedTags.length - 1]);
     }
