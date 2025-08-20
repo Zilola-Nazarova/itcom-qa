@@ -8,13 +8,14 @@ import { getServerSession } from "next-auth";
 import CreateCommentForm from "@/app/comments/CreateCommentForm";
 import QuestionCommentsWrapper from "./QuestionCommentsWrapper";
 import AnswerCommentsWrapper from "./AnswerCommentsWrapper";
+import Link from "next/link";
 
 export const dynamicParams = true;
 
 export async function generateStaticParams() {
   const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/questions`);
   const questions = await res.json();
-  return questions.map((q: Question) => ({ id: q.id }));
+  return questions?.data.map((q: Question) => ({ id: q.id }));
 }
 
 export default async function QuestionDetails({ params }: PageProps) {
@@ -30,9 +31,23 @@ export default async function QuestionDetails({ params }: PageProps) {
       <nav>
         <h2>Question Details</h2>
       </nav>
+      <small>{question.author.name}</small>
       <h3>{question.title}</h3>
       <p>{question.content}</p>
-      <small>Created by {question.author.name}</small>
+      <div className="mt-4 flex flex-wrap gap-2">
+        {question.tags.map((tag) => {
+          const tagName = tag.name;
+          return (
+            <Link
+              key={tag.id}
+              href={`/questions?tags=${encodeURIComponent(tagName)}`}
+              className="inline-block rounded-full bg-blue-100 px-3 py-1 text-sm text-blue-800 transition-colors hover:bg-blue-200"
+            >
+              {tagName}
+            </Link>
+          );
+        })}
+      </div>
       <br />
       <small>
         <span>{new Date(question.createdAt).toLocaleDateString()}</span>

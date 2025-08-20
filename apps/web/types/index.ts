@@ -12,6 +12,11 @@ export type FullComment = Comment & {
   author: User;
 };
 
+export type RenderTag = Tag & {
+  questionCount: number;
+  growth: number;
+};
+
 export type FullAnswer = Answer & {
   author: User;
   votes: Vote[];
@@ -22,16 +27,17 @@ export type QuestionTagWithTag = QuestionTag & {
   tag: Tag;
 };
 
-export type FullQuestion = Question & {
+export type QuestionDetails = Question & {
   author: User;
-  tags: QuestionTagWithTag[];
+  tags: Tag[];
   answers: FullAnswer[];
   votes: Vote[];
   comments: FullComment[];
 };
 
-export type QuestionWithAuthorAndVotes = Question & {
+export type QuestionsList = Question & {
   author: User;
+  tags: Tag[];
   _count: {
     comments: number;
     answers: number;
@@ -40,6 +46,16 @@ export type QuestionWithAuthorAndVotes = Question & {
   downvotes: number;
 };
 
+export type QuestionsWithPagination = QuestionsList[] & {
+  data: QuestionsList[];
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+  pagination: {
+    last_visible_page: number;
+  };
+};
 export type PageProps = {
   params: { id: string };
 };
@@ -48,4 +64,9 @@ export type VotesCount = {
   resourceId: string;
   likes: number;
   dislikes: number;
+};
+
+export type Sort = {
+  value: string;
+  name: string;
 };

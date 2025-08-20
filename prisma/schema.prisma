@@ -13,7 +13,7 @@ model User {
   email         String     @unique
   name          String?
   createdAt     DateTime   @default(now())
-  emailVerified DateTime?
+  email_verified DateTime? @map("emailVerified")
   updatedAt     DateTime   @updatedAt
   image         String?
   accounts      Account[]
@@ -83,10 +83,10 @@ model Answer {
   id          String    @id @default(cuid())
   content     String
   createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
   questionId  String
   authorId    String
-  updatedAt   DateTime  @updatedAt
-  voteBalance Int       @default(0)
+  isAccepted  Boolean   @default(false)
   author      User      @relation(fields: [authorId], references: [id])
   question    Question  @relation(fields: [questionId], references: [id])
   comments    Comment[]
@@ -109,6 +109,7 @@ model Comment {
 model Tag {
   id        String        @id @default(cuid())
   name      String        @unique
+  createdAt  DateTime  @default(now())
   questions QuestionTag[]
 }
 
