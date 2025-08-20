@@ -1,16 +1,16 @@
-'use client';
+"use client";
 
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export default function Pagination({ totalPages }: { totalPages: number }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const currentPage = Number(searchParams.get('page')) || 1;
+  const currentPage = Number(searchParams.get("page")) || 1;
   const router = useRouter();
 
   const createPageURL = (pageNumber: number | string) => {
     const params = new URLSearchParams(searchParams);
-    params.set('page', pageNumber.toString());
+    params.set("page", pageNumber.toString());
     return `${pathname}?${params.toString()}`;
   };
 
@@ -20,7 +20,7 @@ export default function Pagination({ totalPages }: { totalPages: number }) {
         <button
           onClick={() => router.push(createPageURL(currentPage - 1))}
           disabled={currentPage === 1}
-          className="bg-neutral-600 px-2 py-1 rounded-md text-neutral-100 disabled:bg-neutral-400 disabled:cursor-not-allowed"
+          className="rounded-md bg-neutral-600 px-2 py-1 text-neutral-100 disabled:cursor-not-allowed disabled:bg-neutral-400"
         >
           Prev
         </button>
@@ -30,7 +30,7 @@ export default function Pagination({ totalPages }: { totalPages: number }) {
         <button
           onClick={() => router.push(createPageURL(currentPage + 1))}
           disabled={currentPage === totalPages}
-          className="bg-neutral-600 px-2 py-1 rounded-md text-neutral-100 disabled:bg-neutral-400 disabled:cursor-not-allowed"
+          className="rounded-md bg-neutral-600 px-2 py-1 text-neutral-100 disabled:cursor-not-allowed disabled:bg-neutral-400"
         >
           Next
         </button>

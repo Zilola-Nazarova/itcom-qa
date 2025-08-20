@@ -22,8 +22,7 @@ export async function GET(
             },
             votes: true,
           },
-          orderBy: { votes: { _count: 'desc' },
-          },
+          orderBy: { votes: { _count: "desc" } },
         },
         comments: {
           include: { author: { select: { name: true } } },
@@ -32,13 +31,13 @@ export async function GET(
         tags: { select: { tag: { select: { id: true, name: true } } } },
       },
     });
-  
+
     if (!question) {
       return NextResponse.json({ error: "Invalid ID" }, { status: 500 });
     }
 
-    const tags = question.tags.map(t => t.tag);
-  
+    const tags = question.tags.map((t) => t.tag);
+
     return NextResponse.json({ ...question, tags });
   } catch (err: unknown) {
     console.error("API Route Error in questions/[id]/route.ts:", err);

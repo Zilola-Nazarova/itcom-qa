@@ -1,18 +1,18 @@
-'use client';
+"use client";
 
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 type OrderByProps = { value: string; name: string };
 
 const ORDER_BY = [
-  { value: 'lastActivity', name: 'Last Activity' },
-  { value: 'date', name: 'Date' },
-  { value: 'score', name: 'Score' },
-  { value: 'votesCount', name: 'Total votes' },
-  { value: 'answersCount', name: 'Answers' },
-  { value: 'commentsCount', name: 'Comments' },
-  { value: 'likes', name: 'Likes' },
-  { value: 'dislikes', name: 'Dislikes' },
+  { value: "lastActivity", name: "Last Activity" },
+  { value: "date", name: "Date" },
+  { value: "score", name: "Score" },
+  { value: "votesCount", name: "Total votes" },
+  { value: "answersCount", name: "Answers" },
+  { value: "commentsCount", name: "Comments" },
+  { value: "likes", name: "Likes" },
+  { value: "dislikes", name: "Dislikes" },
 ];
 
 export default function SortByOrder() {
@@ -22,19 +22,19 @@ export default function SortByOrder() {
 
   const handleSortByOrder = (orderBy: string) => {
     const params = new URLSearchParams(searchParams);
-    params.set('page', '1');
-    params.set('order_by', orderBy);
+    params.set("page", "1");
+    params.set("order_by", orderBy);
     router.replace(`${pathname}?${params.toString()}`);
   };
   return (
     <>
-      <form className="bg-neutral-200 border">
+      <form className="border bg-neutral-200">
         <select
           className="bg-neutral-100"
           onChange={(e) => handleSortByOrder(e.target.value)}
-          defaultValue={searchParams.get('order_by')?.toString()}
+          defaultValue={searchParams.get("order_by")?.toString()}
         >
-          <option value={''} defaultValue={''}>
+          <option value={""} defaultValue={""}>
             Order by:
           </option>
           {ORDER_BY.map((orderBy: OrderByProps, index: number) => (

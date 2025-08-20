@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
   const sort = searchParams.get("sort") || "desc";
   const tagsParam = searchParams.get("tags");
 
-  const filters = tagsParam ? tagsParam.split(',') : [];
+  const filters = tagsParam ? tagsParam.split(",") : [];
 
   const now = new Date();
 
@@ -23,22 +23,22 @@ export async function GET(req: NextRequest) {
     case "no_answers":
       statusFilter = { answers: { none: {} } };
       break;
-  
+
     case "no_accepted_answers":
       statusFilter = { answers: { some: {}, every: { isAccepted: false } } };
       break;
-  
+
     case "has_accepted_answer":
       statusFilter = { answers: { some: { isAccepted: true } } };
       break;
-  
+
     case "unanswered_recent":
       statusFilter = {
         createdAt: { gte: new Date(now.getTime() - 24 * 60 * 60 * 1000) },
         answers: { none: {} },
       };
       break;
-  
+
     case "hot":
       statusFilter = {
         createdAt: { gte: new Date(now.getTime() - 24 * 60 * 60 * 1000) },
@@ -50,12 +50,12 @@ export async function GET(req: NextRequest) {
   const where: any = {
     title: { contains: search, mode: "insensitive" },
     AND: [
-      ...filters.map(tagName => ({
-        tags: { some: { tag: { name: tagName } } }
-      }))
+      ...filters.map((tagName) => ({
+        tags: { some: { tag: { name: tagName } } },
+      })),
     ],
     ...statusFilter,
-  } 
+  };
 
   try {
     const questions = await prisma.question.findMany({
@@ -70,17 +70,17 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    const questionsWithAggregates = questions.map(q => {
-      const flatTags = q.tags.map(t => t.tag);
-      const upvotes = q.votes.filter(v => v.value > 0).length;
-      const downvotes = q.votes.filter(v => v.value < 0).length;
+    const questionsWithAggregates = questions.map((q) => {
+      const flatTags = q.tags.map((t) => t.tag);
+      const upvotes = q.votes.filter((v) => v.value > 0).length;
+      const downvotes = q.votes.filter((v) => v.value < 0).length;
       const score = upvotes - downvotes;
 
       const lastActivity = new Date(
         Math.max(
           q.updatedAt.getTime(),
-          ...q.answers.map(a => a.updatedAt.getTime()),
-          ...q.comments.map(c => c.updatedAt.getTime())
+          ...q.answers.map((a) => a.updatedAt.getTime()),
+          ...q.comments.map((c) => c.updatedAt.getTime())
         )
       );
 
@@ -137,9 +137,9 @@ export async function GET(req: NextRequest) {
       }
       return sort === "asc" ? aVal - bVal : bVal - aVal;
     });
-  
+
     const paginated = sortedQuestions.slice((page - 1) * limit, page * limit);
-  
+
     return NextResponse.json({
       page,
       limit,
@@ -149,7 +149,10 @@ export async function GET(req: NextRequest) {
     });
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ error: "Failed to fetch questions" }, { status: 500 });  
+    return NextResponse.json(
+      { error: "Failed to fetch questions" },
+      { status: 500 }
+    );
   }
 }
 
@@ -191,6 +194,9 @@ export async function POST(req: Request) {
     return NextResponse.json(newQuestion);
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ error: "Failed to post question" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to post question" },
+      { status: 500 }
+    );
   }
 }

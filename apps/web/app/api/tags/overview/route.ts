@@ -59,24 +59,24 @@ export async function GET() {
     ]);
 
     const trendingTags = recent
-      .map(tag => {
+      .map((tag) => {
         const prevCount =
-          previous.find(t => t.id === tag.id)?._count.questions || 0;
+          previous.find((t) => t.id === tag.id)?._count.questions || 0;
         const currCount = tag._count.questions;
         const growth =
           prevCount === 0 ? currCount : (currCount - prevCount) / prevCount;
         return { ...tag, growth };
       })
-      .filter(t => t.growth > 0)
+      .filter((t) => t.growth > 0)
       .sort((a, b) => b.growth - a.growth)
       .slice(0, 10);
 
-    const topTagsWithCount = topTags.map(tag => ({
+    const topTagsWithCount = topTags.map((tag) => ({
       ...tag,
       questionCount: tag._count.questions,
     }));
 
-    const newTagsWithCount = newTags.map(tag => ({
+    const newTagsWithCount = newTags.map((tag) => ({
       ...tag,
       questionCount: tag._count.questions,
     }));
@@ -88,6 +88,9 @@ export async function GET() {
     });
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ error: "Failed to fetch questions" }, { status: 500 });  
+    return NextResponse.json(
+      { error: "Failed to fetch questions" },
+      { status: 500 }
+    );
   }
 }

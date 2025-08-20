@@ -19,7 +19,8 @@ export async function getQuestions(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/questions?q=${query}&page=${currentPage}&order_by=${orderBy}&tags=${tags}&status=${status}&sort=${sort}&limit=${limit}`,
       {
         next: { revalidate: 0 },
-      });
+      }
+    );
 
     return res.json();
   } catch (error) {

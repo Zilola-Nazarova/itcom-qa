@@ -1,39 +1,37 @@
 import QuestionList from "./QuestionList";
 import { Suspense } from "react";
 import Loading from "../loading";
-import FilterByStatus from '../components/FilterByStatus';
-import FilterByTag from '../components/FilterByTag';
-import Limit from '../components/Limit';
-import Pagination from '../components/Pagination';
-import Search from '../components/Search';
-import SortByOrder from '../components/SortByOrder';
-import SortDirection from '../components/SortDirection';
+import FilterByStatus from "../components/FilterByStatus";
+import FilterByTag from "../components/FilterByTag";
+import Limit from "../components/Limit";
+import Pagination from "../components/Pagination";
+import Search from "../components/Search";
+import SortByOrder from "../components/SortByOrder";
+import SortDirection from "../components/SortDirection";
 import { getQuestions } from "@/lib/api";
 
-export default async function QuestionsPage(
-  {
-    searchParams,
-  }: {
-    searchParams?: {
-      query?: string;
-      page?: string;
-      order_by?: string;
-      tags?: string[];
-      status?: string;
-      sort?: string;
-      limit?: string;
-    };
-  }
-) {
+export default async function QuestionsPage({
+  searchParams,
+}: {
+  searchParams?: {
+    query?: string;
+    page?: string;
+    order_by?: string;
+    tags?: string[];
+    status?: string;
+    sort?: string;
+    limit?: string;
+  };
+}) {
   const params = await searchParams;
-  const query = params?.query || '';
+  const query = params?.query || "";
   const currentPage = Number(params?.page) || 1;
-  const orderBy = params?.order_by || '';
+  const orderBy = params?.order_by || "";
   const tags = params?.tags || [];
-  const status = params?.status || '';
-  const sort = params?.sort || '';
+  const status = params?.status || "";
+  const sort = params?.sort || "";
   const limit = Number(params?.limit) || 25;
-  
+
   const pages = await getQuestions(
     query,
     currentPage,

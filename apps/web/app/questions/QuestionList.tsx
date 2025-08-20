@@ -2,25 +2,23 @@ import type { QuestionsList } from "@/types";
 import Link from "next/link";
 import { getQuestions } from "@/lib/api";
 
-export default async function QuestionList(
-  {
-    query,
-    currentPage,
-    orderBy,
-    tags,
-    status,
-    sort,
-    limit,
-  }: {
-    query?: string;
-    currentPage?: number;
-    orderBy?: string;
-    tags?: string[];
-    status?: string;
-    sort?: string;
-    limit?: number;
-  }
-) {
+export default async function QuestionList({
+  query,
+  currentPage,
+  orderBy,
+  tags,
+  status,
+  sort,
+  limit,
+}: {
+  query?: string;
+  currentPage?: number;
+  orderBy?: string;
+  tags?: string[];
+  status?: string;
+  sort?: string;
+  limit?: number;
+}) {
   const questions = await getQuestions(
     query,
     currentPage,
@@ -60,7 +58,7 @@ export default async function QuestionList(
               <div>
                 Tags:
                 {question.tags.map((tag) => {
-                  return <span key={tag.id}>{tag.name}</span>
+                  return <span key={tag.id}>{tag.name}</span>;
                 })}
               </div>
             </li>

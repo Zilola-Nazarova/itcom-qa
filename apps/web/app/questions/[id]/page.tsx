@@ -34,15 +34,14 @@ export default async function QuestionDetails({ params }: PageProps) {
       <small>{question.author.name}</small>
       <h3>{question.title}</h3>
       <p>{question.content}</p>
-      <div className="flex flex-wrap gap-2 mt-4">
+      <div className="mt-4 flex flex-wrap gap-2">
         {question.tags.map((tag) => {
-          console.log(tag)
           const tagName = tag.name;
           return (
             <Link
               key={tag.id}
               href={`/questions?tags=${encodeURIComponent(tagName)}`}
-              className="inline-block bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full hover:bg-blue-200 transition-colors"
+              className="inline-block rounded-full bg-blue-100 px-3 py-1 text-sm text-blue-800 transition-colors hover:bg-blue-200"
             >
               {tagName}
             </Link>

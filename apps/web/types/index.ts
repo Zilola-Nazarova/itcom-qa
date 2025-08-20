@@ -45,6 +45,7 @@ export type QuestionsList = Question & {
   upvotes: number;
   downvotes: number;
 };
+
 export type QuestionsWithPagination = QuestionsList[] & {
   data: QuestionsList[];
   page: number;
@@ -54,7 +55,7 @@ export type QuestionsWithPagination = QuestionsList[] & {
   pagination: {
     last_visible_page: number;
   };
-}
+};
 export type PageProps = {
   params: { id: string };
 };
@@ -68,4 +69,4 @@ export type VotesCount = {
 export type Sort = {
   value: string;
   name: string;
-}
+};

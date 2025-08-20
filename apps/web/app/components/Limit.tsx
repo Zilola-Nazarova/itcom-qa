@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export default function Limit() {
   const pathname = usePathname();
@@ -12,24 +12,24 @@ export default function Limit() {
     const params = new URLSearchParams(searchParams);
 
     if (!isNaN(Number(value)) && Number(value) > 0) {
-      params.set('page', '1');
-      params.set('limit', value);
+      params.set("page", "1");
+      params.set("limit", value);
       router.replace(`${pathname}?${params.toString()}`);
     }
 
     if (
       Number(value) === 0 ||
       isNaN(Number(value)) ||
-      value === '' ||
+      value === "" ||
       Number(value) > 25
     ) {
-      params.delete('limit');
+      params.delete("limit");
       router.replace(`${pathname}?${params.toString()}`);
     }
   };
 
   return (
-    <form className="bg-neutral-200 border">
+    <form className="border bg-neutral-200">
       <label htmlFor="limit">Limit:</label>
       <input
         id="limit"
@@ -37,7 +37,7 @@ export default function Limit() {
         className="bg-neutral-100"
         min="1"
         placeholder="1-25"
-        defaultValue={searchParams.get('limit') || ''}
+        defaultValue={searchParams.get("limit") || ""}
         onChange={handleLimitChange}
       />
     </form>

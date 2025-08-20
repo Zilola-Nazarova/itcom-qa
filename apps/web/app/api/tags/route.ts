@@ -11,10 +11,13 @@ export async function GET() {
         questions: { _count: "desc" },
       },
     });
-    
+
     return NextResponse.json(tags);
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ error: "Failed to fetch questions" }, { status: 500 });  
+    return NextResponse.json(
+      { error: "Failed to fetch questions" },
+      { status: 500 }
+    );
   }
 }
