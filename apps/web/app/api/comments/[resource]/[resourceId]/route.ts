@@ -17,8 +17,18 @@ export async function POST(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  if (!body?.content) {
-    return NextResponse.json({ error: "Empty Content Received" }, { status: 400 });
+  const content = body?.content?.trim();
+  if (!content || content.length < 5) {
+    return NextResponse.json(
+      { error: "Comment must be at least 5 characters long" },
+      { status: 400 }
+    );
+  }
+  if (content.length > 500) {
+    return NextResponse.json(
+      { error: "Comment cannot exceed 500 characters" },
+      { status: 400 }
+    );
   }
 
   try {
@@ -63,7 +73,7 @@ export async function POST(
 
       return NextResponse.json(newComment);
     }
-    
+
     return NextResponse.json({ error: "Invalid resource type" }, { status: 400 });
   } catch (err) {
     console.error(err);

@@ -15,8 +15,18 @@ export async function POST(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  if (!body?.content) {
-    return NextResponse.json({ error: "Empty Content Received" }, { status: 400 });
+  const content = body?.content?.trim();
+  if (!content || content.length < 30) {
+    return NextResponse.json(
+      { error: "Answer must be at least 30 characters long" },
+      { status: 400 }
+    );
+  }
+  if (content.length > 10_000) {
+    return NextResponse.json(
+      { error: "Answer cannot exceed 10,000 characters" },
+      { status: 400 }
+    );
   }
 
   try {
