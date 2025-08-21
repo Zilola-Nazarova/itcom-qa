@@ -16,10 +16,16 @@ export default function CreateAnswerForm({
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (content.length <= 10) {
+    if (content.length < 30) {
       setErrors((prevErrors) => ({
         ...prevErrors,
         content: "Your answer is too short.",
+      }));
+      return;
+    } else if (content.length > 10000) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        content: "Your answer is too long.",
       }));
       return;
     }
@@ -48,7 +54,7 @@ export default function CreateAnswerForm({
   return (
     <form onSubmit={handleSubmit}>
       <label className="bg-red-200">
-        <span>Answer:</span>
+        <span>Your Answer:</span>
         {errors.content && <p>{errors.content}</p>}
         <input
           required

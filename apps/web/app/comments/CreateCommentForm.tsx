@@ -21,10 +21,16 @@ export default function CreateCommentForm({
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (content.length <= 10) {
+    if (content.length < 5) {
       setErrors((prevErrors) => ({
         ...prevErrors,
         content: "Your comment is too short.",
+      }));
+      return;
+    } else if (content.length > 500) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        content: "Your comment is too long.",
       }));
       return;
     }
