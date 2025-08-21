@@ -11,7 +11,6 @@ export async function POST(
   
   const session = await getServerSession(authOptions);
   const body = await req.json();
-  let newComment;
 
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -32,49 +31,29 @@ export async function POST(
   }
 
   try {
+    let relation: Record<string, any> = {};
+
     if (resource === "question") {
-      const question = await prisma.question.findUnique({
-        where: { id: resourceId },
-        select: { id: true },
-      });
-  
-      if (!question) {
-        return NextResponse.json({ error: "Question not found" }, { status: 404 });
-      }
-
-      newComment = await prisma.comment.create({
-        data: {
-          content: body.content,
-          author: { connect: { id: session.user.id } },
-          question: { connect: { id: resourceId } },
-          answer: {},
-        },
-      });
-
-      return NextResponse.json(newComment);
+      const exists = await prisma.question.findUnique({ where: { id: resourceId } });
+      if (!exists) return NextResponse.json({ error: "Question not found" }, { status: 404 });
+      relation = { question: { connect: { id: resourceId } } };
     } else if (resource === "answer") {
-      const answer = await prisma.answer.findUnique({
-        where: { id: resourceId },
-        select: { id: true },
-      });
-
-      if (!answer) {
-        return NextResponse.json({ error: "Answer not found" }, { status: 404 });
-      }
-
-      newComment = await prisma.comment.create({
-        data: {
-          content: body.content,
-          author: { connect: { id: session.user.id } },
-          answer: { connect: { id: resourceId } },
-          question: {},
-        },
-      });
-
-      return NextResponse.json(newComment);
+      const exists = await prisma.answer.findUnique({ where: { id: resourceId } });
+      if (!exists) return NextResponse.json({ error: "Answer not found" }, { status: 404 });
+      relation = { answer: { connect: { id: resourceId } } };
+    } else {
+      return NextResponse.json({ error: "Invalid resource type" }, { status: 400 });
     }
 
-    return NextResponse.json({ error: "Invalid resource type" }, { status: 400 });
+    const newComment = await prisma.comment.create({
+      data: {
+        content,
+        author: { connect: { id: session.user.id } },
+        ...relation,
+      },
+    });
+
+    return NextResponse.json(newComment);
   } catch (err) {
     console.error(err);
     return NextResponse.json(
