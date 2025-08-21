@@ -8,33 +8,68 @@ export async function POST(
   { params }: { params: { resourceId: string; resource: string } }
 ) {
   const { resource, resourceId } = await params;
+  
   const session = await getServerSession(authOptions);
+  const body = await req.json();
+  let newComment;
 
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  const body = await req.json();
-  let newComment;
 
-  if (resource === "question") {
-    newComment = await prisma.comment.create({
-      data: {
-        content: body.content,
-        author: { connect: { id: session.user.id } },
-        question: { connect: { id: resourceId } },
-        answer: {},
-      },
-    });
-  } else if (resource === "answer") {
-    newComment = await prisma.comment.create({
-      data: {
-        content: body.content,
-        author: { connect: { id: session.user.id } },
-        answer: { connect: { id: resourceId } },
-        question: {},
-      },
-    });
+  if (!body?.content) {
+    return NextResponse.json({ error: "Empty Content Received" }, { status: 400 });
   }
 
-  return NextResponse.json(newComment);
+  try {
+    if (resource === "question") {
+      const question = await prisma.question.findUnique({
+        where: { id: resourceId },
+        select: { id: true },
+      });
+  
+      if (!question) {
+        return NextResponse.json({ error: "Question not found" }, { status: 404 });
+      }
+
+      newComment = await prisma.comment.create({
+        data: {
+          content: body.content,
+          author: { connect: { id: session.user.id } },
+          question: { connect: { id: resourceId } },
+          answer: {},
+        },
+      });
+
+      return NextResponse.json(newComment);
+    } else if (resource === "answer") {
+      const answer = await prisma.answer.findUnique({
+        where: { id: resourceId },
+        select: { id: true },
+      });
+
+      if (!answer) {
+        return NextResponse.json({ error: "Answer not found" }, { status: 404 });
+      }
+
+      newComment = await prisma.comment.create({
+        data: {
+          content: body.content,
+          author: { connect: { id: session.user.id } },
+          answer: { connect: { id: resourceId } },
+          question: {},
+        },
+      });
+
+      return NextResponse.json(newComment);
+    }
+    
+    return NextResponse.json({ error: "Invalid resource type" }, { status: 400 });
+  } catch (err) {
+    console.error(err);
+    return NextResponse.json(
+      { error: "Failed to post answer" },
+      { status: 500 }
+    );
+  }
 }

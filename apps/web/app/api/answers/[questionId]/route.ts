@@ -9,13 +9,27 @@ export async function POST(
 ) {
   const session = await getServerSession(authOptions);
   const { questionId } = await params;
-
+  const body = await req.json();
+  
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  if (!body?.content) {
+    return NextResponse.json({ error: "Empty Content Received" }, { status: 400 });
+  }
+
   try {
-    const body = await req.json();
+    const targetQuestion = await prisma.question.findUnique({
+      where: { id: questionId },
+    });
+
+    if (!targetQuestion) {
+      return NextResponse.json(
+        { error: "Question not found" },
+        { status: 404 }
+      );
+    }
 
     const newAnswer = await prisma.answer.create({
       data: {
