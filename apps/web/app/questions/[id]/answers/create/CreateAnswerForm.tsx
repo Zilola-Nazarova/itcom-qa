@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { ANSWER_LIMITS } from "@/lib/constants";
 
 export default function CreateAnswerForm({
   questionId,
@@ -16,16 +17,16 @@ export default function CreateAnswerForm({
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (content.length < 30) {
+    if (content.length < ANSWER_LIMITS.MIN) {
       setErrors((prevErrors) => ({
         ...prevErrors,
-        content: "Your answer is too short.",
+        content: `Answer must be at least ${ANSWER_LIMITS.MIN} characters.`,
       }));
       return;
-    } else if (content.length > 10000) {
+    } else if (content.length > ANSWER_LIMITS.MAX) {
       setErrors((prevErrors) => ({
         ...prevErrors,
-        content: "Your answer is too long.",
+        content: `Answer must not exceed ${ANSWER_LIMITS.MAX} characters.`,
       }));
       return;
     }

@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { COMMENT_LIMITS } from "@/lib/constants";
 
 export default function CreateCommentForm({
   questionId,
@@ -21,16 +22,16 @@ export default function CreateCommentForm({
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (content.length < 5) {
+    if (content.length < COMMENT_LIMITS.MIN) {
       setErrors((prevErrors) => ({
         ...prevErrors,
-        content: "Your comment is too short.",
+        content: `Comment must be at least ${COMMENT_LIMITS.MIN} characters.`,
       }));
       return;
-    } else if (content.length > 500) {
+    } else if (content.length > COMMENT_LIMITS.MAX) {
       setErrors((prevErrors) => ({
         ...prevErrors,
-        content: "Your comment is too long.",
+        content: `Comment must not exceed ${COMMENT_LIMITS.MAX} characters.`,
       }));
       return;
     }
