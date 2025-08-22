@@ -52,13 +52,53 @@ export async function POST(
         author: { connect: { id: session.user.id } },
         ...relation,
       },
+      include: {
+        author: { select: { name: true } },
+      },
     });
 
     return NextResponse.json(newComment);
   } catch (err) {
     console.error(err);
     return NextResponse.json(
-      { error: "Failed to post answer" },
+      { error: "Failed to post comment" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function GET(
+  req: Request,
+  { params }: { params: { resourceId: string; resource: string } }
+) {
+  const { resource, resourceId } = await params;
+
+  try {
+    let where: Record<string, any> = {};
+
+    if (resource === "question") {
+      const exists = await prisma.question.findUnique({ where: { id: resourceId } });
+      if (!exists) return NextResponse.json({ error: "Question not found" }, { status: 404 });
+      where = { questionId: resourceId };
+    } else if (resource === "answer") {
+      const exists = await prisma.answer.findUnique({ where: { id: resourceId } });
+      if (!exists) return NextResponse.json({ error: "Answer not found" }, { status: 404 });
+      where = { answerId: resourceId };
+    } else {
+      return NextResponse.json({ error: "Invalid resource type" }, { status: 400 });
+    }
+  
+    const comments = await prisma.comment.findMany({
+      where,
+      include: { author: { select: { name: true } } },
+      orderBy: { createdAt: "desc" },
+    });
+
+    return NextResponse.json(comments);
+  } catch (err) {
+    console.error(err);
+    return NextResponse.json(
+      { error: "Failed to fetch comments" },
       { status: 500 }
     );
   }

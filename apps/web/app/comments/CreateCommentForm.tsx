@@ -1,17 +1,18 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
 import { COMMENT_LIMITS } from "@/lib/constants";
+import { FullComment } from "@/types";
 
 export default function CreateCommentForm({
   questionId,
   answerId,
+  onNewComment,
 }: {
   questionId: string | null;
   answerId: string | null;
+  onNewComment: (comment: FullComment) => void;
 }) {
-  const router = useRouter();
 
   const [content, setContent] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -55,23 +56,27 @@ export default function CreateCommentForm({
     }
 
     setIsLoading(true);
-
-    const res = await fetch(`/api/comments/${resource}/${resourceId}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ content }),
-    });
-
-    const result = await res.json();
-    setIsLoading(false);
-
-    if (res.ok) {
-      setContent("");
-      setErrors({ content: "" });
-      setIsExpanded(false);
-      router.refresh();
-    } else {
-      setErrors({ content: result.message || "Something went wrong." });
+    try {
+      const res = await fetch(`/api/comments/${resource}/${resourceId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content }),
+      });
+  
+      const result = await res.json();
+      setIsLoading(false);
+  
+      if (res.ok) {
+        setContent("");
+        setErrors({ content: "" });
+        setIsExpanded(false);
+        onNewComment(result); 
+      } else {
+        setErrors({ content: result.message || "Something went wrong." });
+      }
+    } catch {
+      setIsLoading(false);
+      setErrors({ content: "Network error. Please try again." });
     }
   };
 

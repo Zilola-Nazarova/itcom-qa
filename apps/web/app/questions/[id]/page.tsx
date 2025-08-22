@@ -65,9 +65,7 @@ export default async function QuestionDetails({ params }: PageProps) {
 
       <Votes questionId={id} answerId={null} userId={userId} />
 
-      <QuestionCommentsWrapper comments={question.comments} />
-
-      {session && <CreateCommentForm questionId={id} answerId={null} />}
+      <QuestionCommentsWrapper questionId={id} />
       
       <h4>Answers:</h4>
       
@@ -90,11 +88,8 @@ export default async function QuestionDetails({ params }: PageProps) {
 
               <Votes questionId={null} answerId={answer.id} userId={userId} />
 
-              <AnswerCommentsWrapper comments={answer.comments} />
+              <AnswerCommentsWrapper answerId={answer.id} />
 
-              {session && (
-                <CreateCommentForm questionId={null} answerId={answer.id} />
-              )}
             </li>
           );
         })}
