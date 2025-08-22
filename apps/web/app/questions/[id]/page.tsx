@@ -5,7 +5,6 @@ import CreateAnswerForm from "./answers/create/CreateAnswerForm";
 import Votes from "@/app/votes/Votes";
 import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
-import CreateCommentForm from "@/app/comments/CreateCommentForm";
 import QuestionCommentsWrapper from "./QuestionCommentsWrapper";
 import AnswerCommentsWrapper from "./AnswerCommentsWrapper";
 import Link from "next/link";

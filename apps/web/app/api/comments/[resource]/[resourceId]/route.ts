@@ -4,6 +4,11 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { COMMENT_LIMITS } from "@/lib/constants";
 
+type CommentRelation =
+  | { question: { connect: { id: string } } }
+  | { answer: { connect: { id: string } } }
+  | object;
+
 export async function POST(
   req: Request,
   { params }: { params: { resourceId: string; resource: string } }
@@ -32,7 +37,7 @@ export async function POST(
   }
 
   try {
-    let relation: Record<string, any> = {};
+    let relation: CommentRelation = {};
 
     if (resource === "question") {
       const exists = await prisma.question.findUnique({
@@ -89,7 +94,7 @@ export async function GET(
   const { resource, resourceId } = await params;
 
   try {
-    let where: Record<string, any> = {};
+    let where: CommentRelation = {};
 
     if (resource === "question") {
       const exists = await prisma.question.findUnique({
