@@ -73,9 +73,9 @@ export default async function QuestionDetails({ params }: PageProps) {
       )}
 
       <ul>
-        {question.answers.map(async (answer) => {
+        {question.answers.map((answer) => {
           return (
-            <li key={answer.id}>
+            <li key={answer.id} className="border-b pb-4 mb-4">
               <p>{answer.content}</p>
               <small>Created by {answer.author.name}</small>
               <br />
@@ -86,6 +86,12 @@ export default async function QuestionDetails({ params }: PageProps) {
               )}
               <span>{new Date(answer.createdAt).toLocaleDateString()}</span>
               <span> at {new Date(answer.createdAt).toLocaleTimeString()}</span>
+
+              {answer.isAccepted && (
+                <span className="ml-2 px-2 py-1 text-xs font-semibold text-green-800 bg-green-100 rounded">
+                  Accepted Answer
+                </span>
+              )}
 
               <Votes questionId={null} answerId={answer.id} userId={userId} />
 
