@@ -29,6 +29,10 @@ export default async function QuestionList({
     limit
   );
 
+  if (!questions?.data || questions?.data.length === 0) {
+    return <p>No questions found.</p>;
+  }
+
   return (
     <>
       <ul className="bg-fuchsia-200">

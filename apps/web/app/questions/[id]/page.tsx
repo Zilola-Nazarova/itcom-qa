@@ -62,6 +62,8 @@ export default async function QuestionDetails({ params }: PageProps) {
 
       {session && <CreateAnswerForm questionId={id} />}
 
+      {(!question.answers || question.answers.length === 0) && <p>No answers yet.</p>}
+
       <ul>
         Answers:
         {question.answers.map(async (answer) => {

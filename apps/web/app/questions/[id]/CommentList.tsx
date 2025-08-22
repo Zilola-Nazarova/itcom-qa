@@ -7,6 +7,10 @@ export default function CommentList({ comments }: { comments: FullComment[] }) {
   const [showAll, setShowAll] = useState(false);
   const visibleComments = showAll ? comments : comments.slice(0, 3);
 
+  if (!comments || comments.length === 0) {
+    return <p>No comments yet.</p>;
+  }
+
   return (
     <ul>
       Comments:
