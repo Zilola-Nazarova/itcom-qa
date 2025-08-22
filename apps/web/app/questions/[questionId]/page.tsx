@@ -10,6 +10,7 @@ import AnswerCommentsWrapper from "./AnswerCommentsWrapper";
 import Link from "next/link";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import AcceptToggleButton from "@/app/components/AcceptToggleButton";
 
 dayjs.extend(relativeTime);
 
@@ -92,6 +93,14 @@ export default async function QuestionDetails({ params }: PageProps) {
                   Accepted Answer
                 </span>
               )}
+
+              {userId === question.authorId && 
+                <AcceptToggleButton
+                  questionId={question.id}
+                  answerId={answer.id}
+                  isAccepted={answer.isAccepted}
+                />
+              }
 
               <Votes questionId={null} answerId={answer.id} userId={userId} />
 
