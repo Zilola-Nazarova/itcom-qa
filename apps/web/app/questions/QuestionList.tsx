@@ -1,6 +1,10 @@
 import type { QuestionsList } from "@/types";
 import Link from "next/link";
 import { getQuestions } from "@/lib/api";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+
+dayjs.extend(relativeTime);
 
 export default async function QuestionList({
   query,
@@ -29,6 +33,10 @@ export default async function QuestionList({
     limit
   );
 
+  if (!questions?.data || questions?.data.length === 0) {
+    return <p>No questions found.</p>;
+  }
+
   return (
     <>
       <ul className="bg-fuchsia-200">
@@ -39,6 +47,11 @@ export default async function QuestionList({
                 <div>
                   <h3>{question.title}</h3>
                   <p>{question.content.slice(0, 20)}...</p>
+                  {question.createdAt && (
+                    <span className="ml-1 text-xs text-gray-500">
+                      {dayjs(question.createdAt).fromNow()}
+                    </span>
+                  )}
                   <span>
                     {new Date(question.createdAt).toLocaleDateString()}
                   </span>{" "}

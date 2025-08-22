@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Tag } from "@/lib/db";
 
 export default function CreateQuestionForm() {
@@ -18,6 +18,27 @@ export default function CreateQuestionForm() {
     content: string;
     tags: string;
   }>({ title: "", content: "", tags: "" });
+
+  const titleRef = useRef<HTMLTextAreaElement>(null);
+  const contentRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    titleRef.current?.focus();
+  }, []);
+
+  useEffect(() => {
+    if (titleRef.current) {
+      titleRef.current.style.height = "auto";
+      titleRef.current.style.height = titleRef.current.scrollHeight + "px";
+    }
+  }, [title]);
+
+  useEffect(() => {
+    if (contentRef.current) {
+      contentRef.current.style.height = "auto";
+      contentRef.current.style.height = contentRef.current.scrollHeight + "px";
+    }
+  }, [content]);
 
   useEffect(() => {
     const fetchTags = async () => {
@@ -92,22 +113,28 @@ export default function CreateQuestionForm() {
 
   return (
     <form onSubmit={handleSubmit}>
-      <label className="bg-red-200">
+      <label className="mb-2 block bg-red-200">
         <span>Title:</span>
-        <input
+        <textarea
+          ref={titleRef}
           required
-          type="text"
-          onChange={(e) => setTitle(e.target.value)}
           value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          className="w-full resize-none overflow-hidden rounded-md border p-2 text-sm"
+          rows={1}
+          placeholder="What’s your question in a nutshell?"
         />
       </label>
-      <label className="bg-red-200">
+      <label className="mb-2 block bg-red-200">
         <span>Content:</span>
-        <input
+        <textarea
+          ref={contentRef}
           required
-          type="text"
-          onChange={(e) => setContent(e.target.value)}
           value={content}
+          onChange={(e) => setContent(e.target.value)}
+          className="w-full resize-none overflow-hidden rounded-md border p-2 text-sm"
+          rows={5}
+          placeholder="Describe your question in detail..."
         />
       </label>
 
@@ -156,9 +183,11 @@ export default function CreateQuestionForm() {
           ))}
         </ul>
       )}
-      <button disabled={isLoading}>
-        {isLoading && <span>Sending...</span>}
-        {!isLoading && <span>Submit</span>}
+      <button
+        disabled={isLoading}
+        className="mt-3 rounded bg-blue-600 px-3 py-1 text-white"
+      >
+        {isLoading ? "Sending..." : "Submit"}
       </button>
     </form>
   );
