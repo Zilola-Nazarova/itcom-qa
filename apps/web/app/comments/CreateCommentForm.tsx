@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { COMMENT_LIMITS } from "@/lib/constants";
 
 export default function CreateCommentForm({
@@ -18,8 +18,23 @@ export default function CreateCommentForm({
   const [errors, setErrors] = useState<{ content: string }>({ content: "" });
   const [isExpanded, setIsExpanded] = useState(false);
 
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
   const resource = questionId ? "question" : "answer";
   const resourceId = questionId ? questionId : answerId;
+
+  useEffect(() => {
+    if (isExpanded && textareaRef.current) {
+      textareaRef.current.focus();
+    }
+  }, [isExpanded]);
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = textareaRef.current.scrollHeight + "px";
+    }
+  }, [content]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -75,10 +90,11 @@ export default function CreateCommentForm({
   return (
     <form onSubmit={handleSubmit} className="mt-2">
       <textarea
+        ref={textareaRef}
         required
         value={content}
         onChange={(e) => setContent(e.target.value)}
-        className="w-full border rounded-md p-2 text-sm"
+        className="w-full border rounded-md p-2 text-sm resize-none overflow-hidden"
         placeholder="Write your comment..."
       />
       {errors.content && (
