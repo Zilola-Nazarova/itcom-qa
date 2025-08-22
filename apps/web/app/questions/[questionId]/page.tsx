@@ -22,12 +22,12 @@ export async function generateStaticParams() {
 }
 
 export default async function QuestionDetails({ params }: PageProps) {
-  const { id } = await params;
+  const { questionId } = await params;
 
   const session = await getServerSession(authOptions);
   const userId = session?.user.id ?? null;
 
-  const question = await getQuestion(id);
+  const question = await getQuestion(questionId);
 
   return (
     <main>
@@ -62,9 +62,9 @@ export default async function QuestionDetails({ params }: PageProps) {
         <span> at {new Date(question.createdAt).toLocaleTimeString()}</span>
       </small>
 
-      <Votes questionId={id} answerId={null} userId={userId} />
+      <Votes questionId={questionId} answerId={null} userId={userId} />
 
-      <QuestionCommentsWrapper questionId={id} />
+      <QuestionCommentsWrapper questionId={questionId} />
 
       <h4>Answers:</h4>
 
@@ -97,7 +97,7 @@ export default async function QuestionDetails({ params }: PageProps) {
 
       <h4>Your Answer:</h4>
 
-      {session && <CreateAnswerForm questionId={id} />}
+      {session && <CreateAnswerForm questionId={questionId} />}
     </main>
   );
 }
