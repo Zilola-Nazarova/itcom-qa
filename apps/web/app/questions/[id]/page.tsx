@@ -9,6 +9,10 @@ import CreateCommentForm from "@/app/comments/CreateCommentForm";
 import QuestionCommentsWrapper from "./QuestionCommentsWrapper";
 import AnswerCommentsWrapper from "./AnswerCommentsWrapper";
 import Link from "next/link";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+
+dayjs.extend(relativeTime);
 
 export const dynamicParams = true;
 
@@ -50,6 +54,11 @@ export default async function QuestionDetails({ params }: PageProps) {
       </div>
       <br />
       <small>
+        {question.createdAt && (
+          <span className="ml-1 text-xs text-gray-500">
+            {dayjs(question.createdAt).fromNow()}
+          </span>
+        )}
         <span>{new Date(question.createdAt).toLocaleDateString()}</span>
         <span> at {new Date(question.createdAt).toLocaleTimeString()}</span>
       </small>
@@ -59,19 +68,23 @@ export default async function QuestionDetails({ params }: PageProps) {
       <QuestionCommentsWrapper comments={question.comments} />
 
       {session && <CreateCommentForm questionId={id} answerId={null} />}
-
-      {session && <CreateAnswerForm questionId={id} />}
-
+      
+      <h4>Answers:</h4>
+      
       {(!question.answers || question.answers.length === 0) && <p>No answers yet.</p>}
 
       <ul>
-        Answers:
         {question.answers.map(async (answer) => {
           return (
             <li key={answer.id}>
               <p>{answer.content}</p>
               <small>Created by {answer.author.name}</small>
               <br />
+              {answer.createdAt && (
+                <span className="ml-1 text-xs text-gray-500">
+                  {dayjs(answer.createdAt).fromNow()}
+                </span>
+              )}
               <span>{new Date(answer.createdAt).toLocaleDateString()}</span>
               <span> at {new Date(answer.createdAt).toLocaleTimeString()}</span>
 
@@ -86,6 +99,8 @@ export default async function QuestionDetails({ params }: PageProps) {
           );
         })}
       </ul>
+
+      <h4>Your Answer:</h4>
 
       {session && <CreateAnswerForm questionId={id} />}
     </main>
