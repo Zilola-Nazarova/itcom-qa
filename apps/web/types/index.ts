@@ -57,7 +57,7 @@ export type QuestionsWithPagination = QuestionsList[] & {
   };
 };
 export type PageProps = {
-  params: { id: string };
+  params: { questionId: string };
 };
 
 export type VotesCount = {
