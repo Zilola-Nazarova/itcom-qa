@@ -113,26 +113,26 @@ export default function CreateQuestionForm() {
 
   return (
     <form onSubmit={handleSubmit}>
-      <label className="bg-red-200 block mb-2">
+      <label className="mb-2 block bg-red-200">
         <span>Title:</span>
         <textarea
           ref={titleRef}
           required
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="w-full border rounded-md p-2 text-sm resize-none overflow-hidden"
+          className="w-full resize-none overflow-hidden rounded-md border p-2 text-sm"
           rows={1}
           placeholder="What’s your question in a nutshell?"
         />
       </label>
-      <label className="bg-red-200 block mb-2">
+      <label className="mb-2 block bg-red-200">
         <span>Content:</span>
         <textarea
           ref={contentRef}
           required
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          className="w-full border rounded-md p-2 text-sm resize-none overflow-hidden"
+          className="w-full resize-none overflow-hidden rounded-md border p-2 text-sm"
           rows={5}
           placeholder="Describe your question in detail..."
         />
@@ -185,7 +185,7 @@ export default function CreateQuestionForm() {
       )}
       <button
         disabled={isLoading}
-        className="mt-3 px-3 py-1 bg-blue-600 text-white rounded"
+        className="mt-3 rounded bg-blue-600 px-3 py-1 text-white"
       >
         {isLoading ? "Sending..." : "Submit"}
       </button>

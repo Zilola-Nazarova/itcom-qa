@@ -6,10 +6,14 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import CreateCommentForm from "@/app/comments/CreateCommentForm";
 
-export default function QuestionCommentsWrapper({ questionId }: { questionId: string }) {
+export default function QuestionCommentsWrapper({
+  questionId,
+}: {
+  questionId: string;
+}) {
   const [comments, setComments] = useState<FullComment[]>([]);
   const { data: session } = useSession();
-  
+
   useEffect(() => {
     const fetchComments = async () => {
       const res = await fetch(`/api/comments/question/${questionId}`);
@@ -27,9 +31,9 @@ export default function QuestionCommentsWrapper({ questionId }: { questionId: st
     <>
       <CommentList comments={comments} />
       {session && (
-        <CreateCommentForm 
-          questionId={questionId} 
-          answerId={null} 
+        <CreateCommentForm
+          questionId={questionId}
+          answerId={null}
           onNewComment={handleNewComment}
         />
       )}

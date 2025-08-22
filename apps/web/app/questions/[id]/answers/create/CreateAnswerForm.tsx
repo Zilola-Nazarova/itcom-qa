@@ -14,7 +14,7 @@ export default function CreateAnswerForm({
   const [content, setContent] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<{ content: string }>({ content: "" });
- 
+
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
@@ -24,14 +24,15 @@ export default function CreateAnswerForm({
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = textareaRef.current.scrollHeight + "px";
+      textareaRef.current.style.height =
+        textareaRef.current.scrollHeight + "px";
     }
   }, [content]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isLoading) return;
-    
+
     if (content.length < ANSWER_LIMITS.MIN) {
       setErrors((prevErrors) => ({
         ...prevErrors,
@@ -45,7 +46,7 @@ export default function CreateAnswerForm({
       }));
       return;
     }
-  
+
     setIsLoading(true);
 
     const res = await fetch(`/api/answers/${questionId}`, {
@@ -74,17 +75,17 @@ export default function CreateAnswerForm({
         required
         value={content}
         onChange={(e) => setContent(e.target.value)}
-        className="w-full border rounded-md p-2 text-sm resize-none overflow-hidden"
+        className="w-full resize-none overflow-hidden rounded-md border p-2 text-sm"
         placeholder="Write your answer..."
       />
       {errors.content && (
-        <p className="text-red-500 text-xs mt-1">{errors.content}</p>
+        <p className="mt-1 text-xs text-red-500">{errors.content}</p>
       )}
       <div className="mt-2 flex gap-2">
         <button
           type="submit"
           disabled={isLoading}
-          className="px-3 py-1 bg-blue-600 text-white text-sm rounded-md disabled:opacity-50"
+          className="rounded-md bg-blue-600 px-3 py-1 text-sm text-white disabled:opacity-50"
         >
           {isLoading ? "Sending..." : "Submit"}
         </button>

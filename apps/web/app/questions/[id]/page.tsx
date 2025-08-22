@@ -66,10 +66,12 @@ export default async function QuestionDetails({ params }: PageProps) {
       <Votes questionId={id} answerId={null} userId={userId} />
 
       <QuestionCommentsWrapper questionId={id} />
-      
+
       <h4>Answers:</h4>
-      
-      {(!question.answers || question.answers.length === 0) && <p>No answers yet.</p>}
+
+      {(!question.answers || question.answers.length === 0) && (
+        <p>No answers yet.</p>
+      )}
 
       <ul>
         {question.answers.map(async (answer) => {
@@ -89,7 +91,6 @@ export default async function QuestionDetails({ params }: PageProps) {
               <Votes questionId={null} answerId={answer.id} userId={userId} />
 
               <AnswerCommentsWrapper answerId={answer.id} />
-
             </li>
           );
         })}

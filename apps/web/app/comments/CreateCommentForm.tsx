@@ -13,7 +13,6 @@ export default function CreateCommentForm({
   answerId: string | null;
   onNewComment: (comment: FullComment) => void;
 }) {
-
   const [content, setContent] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<{ content: string }>({ content: "" });
@@ -33,14 +32,15 @@ export default function CreateCommentForm({
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = textareaRef.current.scrollHeight + "px";
+      textareaRef.current.style.height =
+        textareaRef.current.scrollHeight + "px";
     }
   }, [content]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isLoading) return;
-  
+
     if (content.length < COMMENT_LIMITS.MIN) {
       setErrors((prevErrors) => ({
         ...prevErrors,
@@ -62,15 +62,15 @@ export default function CreateCommentForm({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content }),
       });
-  
+
       const result = await res.json();
       setIsLoading(false);
-  
+
       if (res.ok) {
         setContent("");
         setErrors({ content: "" });
         setIsExpanded(false);
-        onNewComment(result); 
+        onNewComment(result);
       } else {
         setErrors({ content: result.message || "Something went wrong." });
       }
@@ -99,18 +99,18 @@ export default function CreateCommentForm({
         required
         value={content}
         onChange={(e) => setContent(e.target.value)}
-        className="w-full border rounded-md p-2 text-sm resize-none overflow-hidden"
+        className="w-full resize-none overflow-hidden rounded-md border p-2 text-sm"
         placeholder="Write your comment..."
       />
       {errors.content && (
-        <p className="text-red-500 text-xs mt-1">{errors.content}</p>
+        <p className="mt-1 text-xs text-red-500">{errors.content}</p>
       )}
 
       <div className="mt-2 flex gap-2">
         <button
           type="submit"
           disabled={isLoading}
-          className="px-3 py-1 bg-blue-600 text-white text-sm rounded-md disabled:opacity-50"
+          className="rounded-md bg-blue-600 px-3 py-1 text-sm text-white disabled:opacity-50"
         >
           {isLoading ? "Sending..." : "Submit"}
         </button>
@@ -121,7 +121,7 @@ export default function CreateCommentForm({
             setContent("");
             setErrors({ content: "" });
           }}
-          className="px-3 py-1 bg-gray-200 text-sm rounded-md"
+          className="rounded-md bg-gray-200 px-3 py-1 text-sm"
         >
           Cancel
         </button>

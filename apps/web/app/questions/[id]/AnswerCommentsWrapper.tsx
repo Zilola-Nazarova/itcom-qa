@@ -6,7 +6,11 @@ import CommentList from "./CommentList";
 import CreateCommentForm from "@/app/comments/CreateCommentForm";
 import { useSession } from "next-auth/react";
 
-export default function AnswerCommentsWrapper({ answerId }: { answerId: string }) {
+export default function AnswerCommentsWrapper({
+  answerId,
+}: {
+  answerId: string;
+}) {
   const [comments, setComments] = useState<FullComment[]>([]);
   const { data: session } = useSession();
 
@@ -27,9 +31,9 @@ export default function AnswerCommentsWrapper({ answerId }: { answerId: string }
     <>
       <CommentList comments={comments} />
       {session && (
-        <CreateCommentForm 
-          questionId={null} 
-          answerId={answerId} 
+        <CreateCommentForm
+          questionId={null}
+          answerId={answerId}
           onNewComment={handleNewComment}
         />
       )}

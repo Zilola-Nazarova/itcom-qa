@@ -9,7 +9,7 @@ export async function POST(
   { params }: { params: { resourceId: string; resource: string } }
 ) {
   const { resource, resourceId } = await params;
-  
+
   const session = await getServerSession(authOptions);
   const body = await req.json();
 
@@ -35,15 +35,30 @@ export async function POST(
     let relation: Record<string, any> = {};
 
     if (resource === "question") {
-      const exists = await prisma.question.findUnique({ where: { id: resourceId } });
-      if (!exists) return NextResponse.json({ error: "Question not found" }, { status: 404 });
+      const exists = await prisma.question.findUnique({
+        where: { id: resourceId },
+      });
+      if (!exists)
+        return NextResponse.json(
+          { error: "Question not found" },
+          { status: 404 }
+        );
       relation = { question: { connect: { id: resourceId } } };
     } else if (resource === "answer") {
-      const exists = await prisma.answer.findUnique({ where: { id: resourceId } });
-      if (!exists) return NextResponse.json({ error: "Answer not found" }, { status: 404 });
+      const exists = await prisma.answer.findUnique({
+        where: { id: resourceId },
+      });
+      if (!exists)
+        return NextResponse.json(
+          { error: "Answer not found" },
+          { status: 404 }
+        );
       relation = { answer: { connect: { id: resourceId } } };
     } else {
-      return NextResponse.json({ error: "Invalid resource type" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Invalid resource type" },
+        { status: 400 }
+      );
     }
 
     const newComment = await prisma.comment.create({
@@ -77,17 +92,32 @@ export async function GET(
     let where: Record<string, any> = {};
 
     if (resource === "question") {
-      const exists = await prisma.question.findUnique({ where: { id: resourceId } });
-      if (!exists) return NextResponse.json({ error: "Question not found" }, { status: 404 });
+      const exists = await prisma.question.findUnique({
+        where: { id: resourceId },
+      });
+      if (!exists)
+        return NextResponse.json(
+          { error: "Question not found" },
+          { status: 404 }
+        );
       where = { questionId: resourceId };
     } else if (resource === "answer") {
-      const exists = await prisma.answer.findUnique({ where: { id: resourceId } });
-      if (!exists) return NextResponse.json({ error: "Answer not found" }, { status: 404 });
+      const exists = await prisma.answer.findUnique({
+        where: { id: resourceId },
+      });
+      if (!exists)
+        return NextResponse.json(
+          { error: "Answer not found" },
+          { status: 404 }
+        );
       where = { answerId: resourceId };
     } else {
-      return NextResponse.json({ error: "Invalid resource type" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Invalid resource type" },
+        { status: 400 }
+      );
     }
-  
+
     const comments = await prisma.comment.findMany({
       where,
       include: { author: { select: { name: true } } },
