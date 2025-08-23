@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
-import { ANSWER_LIMITS } from "@/lib/constants";
+import { validateAnswer } from "@/lib/validation";
 
 export default function CreateAnswerForm({
   questionId,
@@ -13,7 +13,9 @@ export default function CreateAnswerForm({
 
   const [content, setContent] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [errors, setErrors] = useState<{ content: string }>({ content: "" });
+  const [errors, setErrors] = useState<{ content: string | null }>({
+    content: "",
+  });
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -33,20 +35,7 @@ export default function CreateAnswerForm({
     e.preventDefault();
     if (isLoading) return;
 
-    if (content.length < ANSWER_LIMITS.MIN) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        content: `Answer must be at least ${ANSWER_LIMITS.MIN} characters.`,
-      }));
-      return;
-    } else if (content.length > ANSWER_LIMITS.MAX) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        content: `Answer must not exceed ${ANSWER_LIMITS.MAX} characters.`,
-      }));
-      return;
-    }
-
+    setErrors({ content: validateAnswer({ content }) });
     setIsLoading(true);
 
     const res = await fetch(`/api/questions/${questionId}/answers`, {

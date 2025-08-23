@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { COMMENT_LIMITS } from "@/lib/constants";
 import { FullComment } from "@/types";
+import { validateComment } from "@/lib/validation";
 
 export default function CreateCommentForm({
   questionId,
@@ -15,7 +15,9 @@ export default function CreateCommentForm({
 }) {
   const [content, setContent] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [errors, setErrors] = useState<{ content: string }>({ content: "" });
+  const [errors, setErrors] = useState<{ content: string | null }>({
+    content: "",
+  });
   const [isExpanded, setIsExpanded] = useState(false);
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -41,19 +43,7 @@ export default function CreateCommentForm({
     e.preventDefault();
     if (isLoading) return;
 
-    if (content.length < COMMENT_LIMITS.MIN) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        content: `Comment must be at least ${COMMENT_LIMITS.MIN} characters.`,
-      }));
-      return;
-    } else if (content.length > COMMENT_LIMITS.MAX) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        content: `Comment must not exceed ${COMMENT_LIMITS.MAX} characters.`,
-      }));
-      return;
-    }
+    setErrors({ content: validateComment({ content }) });
 
     setIsLoading(true);
     try {
