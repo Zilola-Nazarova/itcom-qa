@@ -3,13 +3,13 @@ import prisma from "@/lib/prisma";
 
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: { questionId: string } }
 ) {
-  const { id } = await params;
+  const { questionId } = await params;
 
   try {
     const question = await prisma.question.findUnique({
-      where: { id },
+      where: { id: questionId },
       include: {
         author: { select: { name: true } },
         answers: {
@@ -22,7 +22,7 @@ export async function GET(
             },
             votes: true,
           },
-          orderBy: { votes: { _count: "desc" } },
+          orderBy: [{ isAccepted: "desc" }, { votes: { _count: "desc" } }],
         },
         comments: {
           include: { author: { select: { name: true } } },

@@ -49,7 +49,7 @@ export default function CreateAnswerForm({
 
     setIsLoading(true);
 
-    const res = await fetch(`/api/answers/${questionId}`, {
+    const res = await fetch(`/api/questions/${questionId}/answers`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ content }),

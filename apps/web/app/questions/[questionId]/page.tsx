@@ -10,6 +10,7 @@ import AnswerCommentsWrapper from "./AnswerCommentsWrapper";
 import Link from "next/link";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import AcceptToggleButton from "@/app/components/AcceptToggleButton";
 
 dayjs.extend(relativeTime);
 
@@ -22,12 +23,12 @@ export async function generateStaticParams() {
 }
 
 export default async function QuestionDetails({ params }: PageProps) {
-  const { id } = await params;
+  const { questionId } = await params;
 
   const session = await getServerSession(authOptions);
   const userId = session?.user.id ?? null;
 
-  const question = await getQuestion(id);
+  const question = await getQuestion(questionId);
 
   return (
     <main>
@@ -62,9 +63,9 @@ export default async function QuestionDetails({ params }: PageProps) {
         <span> at {new Date(question.createdAt).toLocaleTimeString()}</span>
       </small>
 
-      <Votes questionId={id} answerId={null} userId={userId} />
+      <Votes questionId={questionId} answerId={null} userId={userId} />
 
-      <QuestionCommentsWrapper questionId={id} />
+      <QuestionCommentsWrapper questionId={questionId} />
 
       <h4>Answers:</h4>
 
@@ -73,9 +74,9 @@ export default async function QuestionDetails({ params }: PageProps) {
       )}
 
       <ul>
-        {question.answers.map(async (answer) => {
+        {question.answers.map((answer) => {
           return (
-            <li key={answer.id}>
+            <li key={answer.id} className="mb-4 border-b pb-4">
               <p>{answer.content}</p>
               <small>Created by {answer.author.name}</small>
               <br />
@@ -87,6 +88,20 @@ export default async function QuestionDetails({ params }: PageProps) {
               <span>{new Date(answer.createdAt).toLocaleDateString()}</span>
               <span> at {new Date(answer.createdAt).toLocaleTimeString()}</span>
 
+              {answer.isAccepted && (
+                <span className="ml-2 rounded bg-green-100 px-2 py-1 text-xs font-semibold text-green-800">
+                  Accepted Answer
+                </span>
+              )}
+
+              {userId === question.authorId && (
+                <AcceptToggleButton
+                  questionId={question.id}
+                  answerId={answer.id}
+                  isAccepted={answer.isAccepted}
+                />
+              )}
+
               <Votes questionId={null} answerId={answer.id} userId={userId} />
 
               <AnswerCommentsWrapper answerId={answer.id} />
@@ -97,7 +112,7 @@ export default async function QuestionDetails({ params }: PageProps) {
 
       <h4>Your Answer:</h4>
 
-      {session && <CreateAnswerForm questionId={id} />}
+      {session && <CreateAnswerForm questionId={questionId} />}
     </main>
   );
 }

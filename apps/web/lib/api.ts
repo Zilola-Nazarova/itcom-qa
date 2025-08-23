@@ -93,7 +93,7 @@ export async function getQuestion(id: string): Promise<QuestionDetails> {
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/api/questions/` + id,
     {
-      next: { revalidate: 30 },
+      next: { revalidate: 0 },
     }
   );
 
