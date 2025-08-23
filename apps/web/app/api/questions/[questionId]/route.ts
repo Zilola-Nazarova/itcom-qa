@@ -22,10 +22,7 @@ export async function GET(
             },
             votes: true,
           },
-          orderBy: [
-            { isAccepted: "desc" },
-            { votes: { _count: "desc" } },
-          ],
+          orderBy: [{ isAccepted: "desc" }, { votes: { _count: "desc" } }],
         },
         comments: {
           include: { author: { select: { name: true } } },

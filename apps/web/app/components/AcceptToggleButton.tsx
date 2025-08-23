@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
@@ -43,7 +43,7 @@ export default function AcceptToggleButton({
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   const isDisabled = loading || isPending;
 
@@ -52,21 +52,19 @@ export default function AcceptToggleButton({
       <button
         onClick={handleToggle}
         disabled={isDisabled}
-        className={`ml-2 px-2 py-1 text-xs rounded border ${
+        className={`ml-2 rounded border px-2 py-1 text-xs ${
           isAccepted
-            ? "bg-red-100 text-red-700 border-red-300 hover:bg-red-200"
-            : "bg-green-100 text-green-700 border-green-300 hover:bg-green-200"
-        } ${isDisabled ? "opacity-50 cursor-not-allowed" : ""}`}
+            ? "border-red-300 bg-red-100 text-red-700 hover:bg-red-200"
+            : "border-green-300 bg-green-100 text-green-700 hover:bg-green-200"
+        } ${isDisabled ? "cursor-not-allowed opacity-50" : ""}`}
       >
         {loading
           ? "Updating..."
           : isAccepted
-          ? "Unaccept Answer"
-          : "Accept Answer"}
+            ? "Unaccept Answer"
+            : "Accept Answer"}
       </button>
-      {error && (
-        <p className="mt-1 text-xs text-red-500">{error}</p>
-      )}
+      {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
     </>
   );
 }

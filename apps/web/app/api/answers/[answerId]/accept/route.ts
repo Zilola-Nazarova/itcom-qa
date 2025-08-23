@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth"; 
+import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 export async function PATCH(
@@ -37,7 +37,7 @@ export async function PATCH(
       where: { id: answerId },
       data: { isAccepted: !answer.isAccepted },
     });
-    console.log(updated);
+
     return NextResponse.json(updated, { status: 200 });
   } catch (error) {
     console.error(error);
