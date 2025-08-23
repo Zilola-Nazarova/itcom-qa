@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { COMMENT_LIMITS } from "@/lib/constants";
+import { validateComment } from "@/lib/validation";
 
 type CommentRelation =
   | { question: { connect: { id: string } } }
@@ -23,17 +23,9 @@ export async function POST(
   }
 
   const content = body?.content?.trim();
-  if (!content || content.length < COMMENT_LIMITS.MIN) {
-    return NextResponse.json(
-      { error: `Comment must be at least ${COMMENT_LIMITS.MIN} characters.` },
-      { status: 400 }
-    );
-  }
-  if (content.length > COMMENT_LIMITS.MAX) {
-    return NextResponse.json(
-      { error: `Comment must not exceed ${COMMENT_LIMITS.MAX} characters.` },
-      { status: 400 }
-    );
+  const error = validateComment({ content });
+  if (error) {
+    return NextResponse.json({ message: error }, { status: 400 });
   }
 
   try {

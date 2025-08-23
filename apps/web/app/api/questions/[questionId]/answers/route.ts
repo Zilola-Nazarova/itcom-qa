@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { ANSWER_LIMITS } from "@/lib/constants";
+import { validateAnswer } from "@/lib/validation";
 
 export async function POST(
   req: Request,
@@ -17,17 +17,9 @@ export async function POST(
   }
 
   const content = body?.content?.trim();
-  if (!content || content.length < ANSWER_LIMITS.MIN) {
-    return NextResponse.json(
-      { error: `Answer must be at least ${ANSWER_LIMITS.MIN} characters.` },
-      { status: 400 }
-    );
-  }
-  if (content.length > ANSWER_LIMITS.MAX) {
-    return NextResponse.json(
-      { error: `Answer must not exceed ${ANSWER_LIMITS.MAX} characters.` },
-      { status: 400 }
-    );
+  const error = validateAnswer({ content });
+  if (error) {
+    return NextResponse.json({ message: error }, { status: 400 });
   }
 
   try {
