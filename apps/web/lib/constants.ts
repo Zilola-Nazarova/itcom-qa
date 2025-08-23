@@ -11,6 +11,8 @@ export const COMMENT_LIMITS = {
 export const QUESTION_LIMITS = {
   TITLE_MIN: 15,
   TITLE_MAX: 150,
-  BODY_MIN: 30,
-  BODY_MAX: 20_000,
+  CONTENT_MIN: 30,
+  CONTENT_MAX: 20_000,
+  TAG_MIN: 1,
+  TAG_MAX: 5,
 };
