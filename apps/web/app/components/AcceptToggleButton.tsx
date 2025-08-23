@@ -17,10 +17,16 @@ export default function AcceptToggleButton({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const [optimisticAccepted, setOptimisticAccepted] = useState(isAccepted);
+
   const handleToggle = async () => {
-    if (loading) return;
+    if (loading || isPending) return;
+
     setError(null);
+    const next = !optimisticAccepted;
+    setOptimisticAccepted(next);
     setLoading(true);
+
     try {
       const res = await fetch(`/api/answers/${answerId}/accept`, {
         method: "PATCH",
@@ -28,17 +34,15 @@ export default function AcceptToggleButton({
         body: JSON.stringify({ questionId }),
       });
 
-      const result = await res.json();
-
-      if (res.ok) {
-        setError(null);
-        startTransition(() => {
-          router.refresh();
-        });
-      } else {
+      if (!res.ok) {
+        setOptimisticAccepted(!next);
+        const result = await res.json().catch(() => ({}));
         setError(result.message || "Something went wrong.");
+      } else {
+        startTransition(() => router.refresh());
       }
     } catch {
+      setOptimisticAccepted(!next);
       setError("Network error. Please try again.");
     } finally {
       setLoading(false);
@@ -53,14 +57,14 @@ export default function AcceptToggleButton({
         onClick={handleToggle}
         disabled={isDisabled}
         className={`ml-2 rounded border px-2 py-1 text-xs ${
-          isAccepted
+          optimisticAccepted
             ? "border-red-300 bg-red-100 text-red-700 hover:bg-red-200"
             : "border-green-300 bg-green-100 text-green-700 hover:bg-green-200"
         } ${isDisabled ? "cursor-not-allowed opacity-50" : ""}`}
       >
         {loading
           ? "Updating..."
-          : isAccepted
+          : optimisticAccepted
             ? "Unaccept Answer"
             : "Accept Answer"}
       </button>
