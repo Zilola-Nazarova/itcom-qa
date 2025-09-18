@@ -15,9 +15,7 @@ export default function CreateCommentForm({
 }) {
   const [content, setContent] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [errors, setErrors] = useState<{ content: string | null }>({
-    content: "",
-  });
+  const [errors, setErrors] = useState<{ content: string | null }>({ content: null });
   const [isExpanded, setIsExpanded] = useState(false);
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -34,16 +32,24 @@ export default function CreateCommentForm({
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height =
-        textareaRef.current.scrollHeight + "px";
+      textareaRef.current.style.height = textareaRef.current.scrollHeight + "px";
     }
   }, [content]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const value = e.target.value;
+    setContent(value);
+    const error = validateComment({ content: value });
+    setErrors({ content: error });
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isLoading) return;
 
-    setErrors({ content: validateComment({ content }) });
+    const error = validateComment({ content });
+    setErrors({ content: error });
+    if (error) return;
 
     setIsLoading(true);
     try {
@@ -58,7 +64,7 @@ export default function CreateCommentForm({
 
       if (res.ok) {
         setContent("");
-        setErrors({ content: "" });
+        setErrors({ content: null });
         setIsExpanded(false);
         onNewComment(result);
       } else {
@@ -86,9 +92,9 @@ export default function CreateCommentForm({
     <form onSubmit={handleSubmit} className="mt-2">
       <textarea
         ref={textareaRef}
-        required
         value={content}
-        onChange={(e) => setContent(e.target.value)}
+        onChange={handleChange}
+        // onChange={(e) => setContent(e.target.value)}
         className="w-full resize-none overflow-hidden rounded-md border p-2 text-sm"
         placeholder="Write your comment..."
       />
@@ -99,7 +105,7 @@ export default function CreateCommentForm({
       <div className="mt-2 flex gap-2">
         <button
           type="submit"
-          disabled={isLoading}
+          disabled={isLoading || !!errors.content || !content.trim()}
           className="rounded-md bg-blue-600 px-3 py-1 text-sm text-white disabled:opacity-50"
         >
           {isLoading ? "Sending..." : "Submit"}
@@ -109,7 +115,7 @@ export default function CreateCommentForm({
           onClick={() => {
             setIsExpanded(false);
             setContent("");
-            setErrors({ content: "" });
+            setErrors({ content: null });
           }}
           className="rounded-md bg-gray-200 px-3 py-1 text-sm"
         >

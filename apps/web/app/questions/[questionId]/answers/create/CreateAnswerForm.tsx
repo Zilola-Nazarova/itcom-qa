@@ -14,7 +14,7 @@ export default function CreateAnswerForm({
   const [content, setContent] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<{ content: string | null }>({
-    content: "",
+    content: null,
   });
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -31,29 +31,42 @@ export default function CreateAnswerForm({
     }
   }, [content]);
 
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const value = e.target.value;
+    setContent(value);
+    const error = validateAnswer({ content: value });
+    setErrors({ content: error });
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isLoading) return;
 
-    setErrors({ content: validateAnswer({ content }) });
+    const error = validateAnswer({ content });
+    setErrors({ content: error });
+    if (error) return;
+
     setIsLoading(true);
-
-    const res = await fetch(`/api/questions/${questionId}/answers`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ content }),
-    });
-
-    const result = await res.json();
-
-    setIsLoading(false);
-
-    if (res.ok) {
-      setContent("");
-      setErrors({ content: "" });
-      router.refresh();
-    } else {
-      setErrors({ content: result.message || "Something went wrong." });
+    try {
+      const res = await fetch(`/api/questions/${questionId}/answers`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content }),
+      });
+  
+      const result = await res.json();
+      setIsLoading(false);
+  
+      if (res.ok) {
+        setContent("");
+        setErrors({ content: null });
+        router.refresh();
+      } else {
+        setErrors({ content: result.message || "Something went wrong." });
+      }
+    } catch {
+      setIsLoading(false);
+      setErrors({ content: "Network error. Please try again." });
     }
   };
 
@@ -61,9 +74,9 @@ export default function CreateAnswerForm({
     <form onSubmit={handleSubmit} className="mt-2">
       <textarea
         ref={textareaRef}
-        required
         value={content}
-        onChange={(e) => setContent(e.target.value)}
+        onChange={handleChange}
+        // onChange={(e) => setContent(e.target.value)}
         className="w-full resize-none overflow-hidden rounded-md border p-2 text-sm"
         placeholder="Write your answer..."
       />
@@ -73,7 +86,7 @@ export default function CreateAnswerForm({
       <div className="mt-2 flex gap-2">
         <button
           type="submit"
-          disabled={isLoading}
+          disabled={isLoading || !!errors.content || !content.trim()}
           className="rounded-md bg-blue-600 px-3 py-1 text-sm text-white disabled:opacity-50"
         >
           {isLoading ? "Sending..." : "Submit"}
