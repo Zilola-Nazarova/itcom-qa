@@ -9,19 +9,31 @@ export function validateQuestion(data: {
   content: string;
   tags: string[];
 }) {
-  if (!data.title || data.title.trim().length < QUESTION_LIMITS.TITLE_MIN)
-    return `Title must be at least ${QUESTION_LIMITS.TITLE_MIN} characters.`;
-  if (data.title.length > QUESTION_LIMITS.TITLE_MAX)
-    return `Title too long (max ${QUESTION_LIMITS.TITLE_MAX} characters).`;
-  if (!data.content || data.content.trim().length < QUESTION_LIMITS.CONTENT_MIN)
-    return `Content must be at least ${QUESTION_LIMITS.CONTENT_MIN} characters.`;
-  if (data.content.length > QUESTION_LIMITS.CONTENT_MAX)
-    return `Content too long (max ${QUESTION_LIMITS.CONTENT_MAX} characters).`;
-  if (!data.tags || data.tags.length < QUESTION_LIMITS.TAG_MIN)
-    return `Select at least $${QUESTION_LIMITS.TAG_MIN} tag.`;
-  if (data.tags.length > QUESTION_LIMITS.TAG_MAX)
-    return `No more than ${QUESTION_LIMITS.TAG_MAX} tags allowed.`;
-  return null;
+  const errors: {
+    title: string;
+    content: string;
+    tags: string;
+  } = { title: "", content: "", tags: "" };
+
+  if (!data.title || data.title.trim().length < QUESTION_LIMITS.TITLE_MIN) {
+    errors.title = `Title must be at least ${QUESTION_LIMITS.TITLE_MIN} characters.`;
+  } else if (data.title.length > QUESTION_LIMITS.TITLE_MAX) {
+    errors.title = `Title too long (max ${QUESTION_LIMITS.TITLE_MAX} characters).`;
+  }
+
+  if (!data.content || data.content.trim().length < QUESTION_LIMITS.CONTENT_MIN) {
+    errors.content = `Content must be at least ${QUESTION_LIMITS.CONTENT_MIN} characters.`;
+  } else if (data.content.length > QUESTION_LIMITS.CONTENT_MAX) {
+    errors.content = `Content too long (max ${QUESTION_LIMITS.CONTENT_MAX} characters).`;
+  }
+
+  if (!data.tags || data.tags.length < QUESTION_LIMITS.TAG_MIN) {
+    errors.tags = `Select at least ${QUESTION_LIMITS.TAG_MIN} tag.`;
+  } else if (data.tags.length > QUESTION_LIMITS.TAG_MAX) {
+    errors.tags = `No more than ${QUESTION_LIMITS.TAG_MAX} tags allowed.`;
+  }
+
+  return errors;
 }
 
 export function validateAnswer(data: { content: string }) {
