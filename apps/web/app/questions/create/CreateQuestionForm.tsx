@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import type { Tag } from "@/lib/db";
+import { validateQuestion } from "@/lib/validation";
 
 export default function CreateQuestionForm() {
   const router = useRouter();
@@ -14,10 +15,11 @@ export default function CreateQuestionForm() {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<{
-    title: string;
-    content: string;
-    tags: string;
-  }>({ title: "", content: "", tags: "" });
+    general: string | null;
+    title: string | null;
+    content: string | null;
+    tags: string | null;
+  }>({ general: null, title: null, content: null, tags: null });
 
   const titleRef = useRef<HTMLTextAreaElement>(null);
   const contentRef = useRef<HTMLTextAreaElement>(null);
@@ -58,15 +60,16 @@ export default function CreateQuestionForm() {
 
   const addTag = (tag: string) => {
     const normalized = tag.trim().toLowerCase();
-    if (normalized && !selectedTags.includes(normalized)) {
-      const updated = [...selectedTags, normalized];
-      setSelectedTags(updated);
+    if (!selectedTags.includes(normalized) && normalized) {
+      handleQuestionChange("tags", [...selectedTags, normalized]);
     }
   };
 
   const removeTag = (tag: string) => {
-    const updated = selectedTags.filter((t) => t !== tag);
-    setSelectedTags(updated);
+    handleQuestionChange(
+      "tags",
+      selectedTags.filter((t) => t !== tag)
+    );
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -82,32 +85,65 @@ export default function CreateQuestionForm() {
     }
   };
 
+  const handleQuestionChange = (
+    field: "title" | "content" | "tags",
+    value: string | string[]
+  ) => {
+    // Обновляем состояние соответствующего поля
+    if (field === "title") setTitle(value as string);
+    if (field === "content") setContent(value as string);
+    if (field === "tags") setSelectedTags(value as string[]);
+
+    // Генерируем объект для валидации
+    const questionData = {
+      title: field === "title" ? (value as string) : title,
+      content: field === "content" ? (value as string) : content,
+      tags: field === "tags" ? (value as string[]) : selectedTags,
+    };
+
+    // Валидируем и обновляем ошибки
+    const validationErrors = validateQuestion(questionData);
+    setErrors(validationErrors);
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (selectedTags.length === 0) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        tags: "At least one tag is required",
-      }));
-      return;
-    }
-    setIsLoading(true);
+      e.preventDefault();
+      if (isLoading) return;
+  
+      const question = { title, content, tags: selectedTags };
+      const validationErrors = validateQuestion(question);
+      setErrors(validationErrors);
+      if (validationErrors.title || validationErrors.content || validationErrors.tags) return;
 
-    const question = { title, content, tags: selectedTags };
+      setIsLoading(true);
+    try {
+      const res = await fetch("/api/questions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(question),
+      });
+  
+      const result = await res.json();
+      setIsLoading(false);
 
-    const res = await fetch("/api/questions", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(question),
-    });
-
-    const result = await res.json();
-
-    if (res.ok) {
-      alert("Question submitted!");
-      router.push("/questions");
-    } else {
-      throw new Error(result.message || "Something went wrong.");
+      if (res.ok) {
+        setErrors({ general: null, title: null, content: null, tags: null });
+        router.push("/questions");
+      } else {
+        if (result.errors) {
+          setErrors(result.errors);
+        } else {
+          setErrors({
+            general: result.message || "Something went wrong.",
+            title: null,
+            content: null,
+            tags: null,
+          });
+        }
+      }
+    } catch {
+      setIsLoading(false);
+      setErrors({ general: "Network error. Please try again.", title: null, content: null, tags: null });
     }
   };
 
@@ -117,30 +153,36 @@ export default function CreateQuestionForm() {
         <span>Title:</span>
         <textarea
           ref={titleRef}
-          required
           value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          onChange={(e) => handleQuestionChange("title", e.target.value)}
+          // onChange={(e) => setTitle(e.target.value)}
           className="w-full resize-none overflow-hidden rounded-md border p-2 text-sm"
           rows={1}
           placeholder="What’s your question in a nutshell?"
         />
+        {errors.title && (
+          <p className="mt-1 text-xs text-red-500">{errors.title}</p>
+        )}
       </label>
       <label className="mb-2 block bg-red-200">
         <span>Content:</span>
         <textarea
           ref={contentRef}
-          required
           value={content}
-          onChange={(e) => setContent(e.target.value)}
+          onChange={(e) => handleQuestionChange("content", e.target.value)}
+          // onChange={(e) => setContent(e.target.value)}
           className="w-full resize-none overflow-hidden rounded-md border p-2 text-sm"
           rows={5}
           placeholder="Describe your question in detail..."
         />
+        {errors.content && (
+          <p className="mt-1 text-xs text-red-500">{errors.content}</p>
+        )}
       </label>
 
       <div className="rounded border bg-neutral-200 p-2">
         <span className="font-bold">Tags:</span>
-        {errors.tags && <p>{errors.tags}</p>}
+        {errors.tags && <p className="mt-1 text-xs text-red-500">{errors.tags}</p>}
         <div className="mt-2 flex flex-wrap gap-2">
           {selectedTags.map((tag) => (
             <span
@@ -184,8 +226,16 @@ export default function CreateQuestionForm() {
         </ul>
       )}
       <button
-        disabled={isLoading}
-        className="mt-3 rounded bg-blue-600 px-3 py-1 text-white"
+          disabled={
+            isLoading ||
+            !!errors.title ||
+            !!errors.content ||
+            !!errors.tags ||
+            !title.trim() ||
+            !content.trim() ||
+            selectedTags.length === 0
+          }
+          className="rounded-md bg-blue-600 px-3 py-1 text-sm text-white disabled:opacity-50"
       >
         {isLoading ? "Sending..." : "Submit"}
       </button>

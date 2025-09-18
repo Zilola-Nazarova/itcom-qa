@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { Prisma } from "@prisma/client";
+import { validateQuestion } from "@/lib/validation";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
@@ -159,14 +160,19 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
+  const body = await req.json();
 
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  try {
-    const body = await req.json();
+  const error = validateQuestion({ title: body.title, content: body.content, tags: body.tags });
 
+  if (error.title || error.content || error.tags) {
+    return NextResponse.json({ errors: error }, { status: 400 });
+  }
+
+  try {
     const tags = await Promise.all(
       body.tags.map(async (tagName: string) =>
         prisma.tag.upsert({

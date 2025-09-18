@@ -10,10 +10,11 @@ export function validateQuestion(data: {
   tags: string[];
 }) {
   const errors: {
-    title: string;
-    content: string;
-    tags: string;
-  } = { title: "", content: "", tags: "" };
+    general: string | null;
+    title: string | null;
+    content: string | null;
+    tags: string | null;
+  } = { general: null, title: null, content: null, tags: null };
 
   if (!data.title || data.title.trim().length < QUESTION_LIMITS.TITLE_MIN) {
     errors.title = `Title must be at least ${QUESTION_LIMITS.TITLE_MIN} characters.`;
